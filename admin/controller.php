@@ -36,5 +36,36 @@
                         }
 
                         break;
+case 'giaohang':
+                        if($check['Quyen']>2 && $check['Quyen']<5){
+                            echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
+                        }else{
+                             include('shipper/main.php');
+                        }
 
+                        break;
+                    case 'danhthu':
+                        if($check['Quyen']>2){
+                            echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
+                        }else{
+                             include('danhthu/main.php');
+                        }
+
+                        break;
+                    case 'kho':
+                        if($check['Quyen']>3){
+                            echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
+                        }else{
+                            include('kho/main.php');
+                        }
+
+                        break;
+                    case 'nhanvien':
+                        if($check['Quyen']>2){
+                            echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
+                        }else{
+                            include('nhanvien/main.php');
+                        }
+
+                        break;
     ?>
