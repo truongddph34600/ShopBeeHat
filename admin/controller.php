@@ -68,4 +68,30 @@ case 'giaohang':
                         }
 
                         break;
+                        case 'khuyenmai':
+                                                if($check['Quyen']>2){
+                                                    echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
+                                                }else{
+                                                    include('khuyenmai/main.php');
+                                                }
+
+                                                break;
+                                            case 'kh':
+                                                if($check['Quyen']>2){
+                                                    echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
+                                                }else{
+                                                    include('khachhang/thongtin.php');
+                                                }
+
+                                                break;
+                                            case 'thongtincanhan':
+                                                 include('nhanvien/thongtin.php');
+                                                 break;
+                                            default:
+                                                break;
+                                        }
+                              }
+                              else {
+                                  include_once('content.php');
+                              }
     ?>
