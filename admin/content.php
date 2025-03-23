@@ -93,3 +93,27 @@
                 </div>
               </div>
             </div>
+        </div>
+                   <div class="row">
+                    <div class="col-xl-12 col-lg-7">
+                      <!-- Area Chart -->
+                      <div class="card shadow mb-4">
+                        <div class="card-header py-3">
+                          <h6 class="m-0 font-weight-bold text-primary"><font style="vertical-align: inherit;"><font style="vertical-align: inherit;">Quản Lý Hệ Thống</font></font></h6>
+                        </div>
+                        <div class="card-body">
+                          <a href="?action=nhanvien"><button type="button" class="btn btn-primary">Quản Lý Nhân Viên</button></a>
+                          <a href="?action=kh"><button type="button" class="btn btn-secondary">Quản Lý Khách Hàng</button></a>
+                          <a href="?action=danhmuc"><button type="button" class="btn btn-success">Quản Lý Danh Mục</button></a>
+                          <a href="?action=khuyenmai"><button type="button" class="btn btn-danger">Quản Lý Khuyến Mãi</button></a>
+                          <a href="?action=danhthu"><button type="button" class="btn btn-warning">Doanh Thu</button></a>
+                          <!-- <button type="button" class="btn btn-info">Info</button>
+                          <button type="button" class="btn btn-light">Light</button>
+                          <button type="button" class="btn btn-dark">Dark</button>
+                          <button type="button" class="btn btn-link">Link</button> -->
+                        <hr>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+         		</div>
