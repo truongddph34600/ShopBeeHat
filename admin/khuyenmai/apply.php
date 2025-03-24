@@ -97,3 +97,62 @@ if(isset($_POST['btsearch'])){
 <?php 
 }
 //
+//code phẩn loại sản phẩm + phẩn trang.
+if(isset($_POST['th'])){//nếu như bấm vài nút thương hiệu
+	$mth=$_POST['th'];?><?php 
+
+	
+    $sql="select * from sanpham where  MaNCC ='$mth'"; 
+	$rs=mysqli_query($conn,$sql);?>
+<form action="khuyenmai/xuly.php" method="get" accept-charset="utf-8" class="container-fluid">
+    <div class="card card-body">
+        <table class="table-hover table text-center">
+            <thead>
+                <tr class="badge-info">
+                    <th>Hình Nền</th>
+                    <th>Mã Sản Phẩm</th>
+                    <th>Tên Sản Phẩm</th>
+                    <th>Thương hiệu</th>
+                    <th>Đơn Giá</th>
+                    <th>chọn 1</th>
+                    <th class="badge-light">
+                        <input class="btn btn-outline-primary" type="button" id="btn1" value="tất cả" />
+                        <input class="btn btn-outline-dark" type="button" id="btn2" value="Hủy" />
+                    </th>
+                </tr>
+            </thead>
+
+
+            <?php $i=0; while ($row=mysqli_fetch_array($rs)) {$i=$i+1;$mth=$row['MaNCC'];$sql1="select *from nhacc where MaNCC='$mth'";
+					$rs1=mysqli_query($conn,$sql1);$row1=mysqli_fetch_array($rs1);?>
+            <tbody>
+                <tr>
+                    <td><img src="../webroot/img/sanpham/<?php echo $row['AnhNen'];?>" width="60" height="50"></td>
+                    <td><?php echo $row['MaSP'] ;?></td>
+                    <td><?php echo $row['TenSP'] ;?></td>
+                    <td><?php echo $row1['TenNCC'] ;?></td>
+                    <td><?php echo number_format($row['DonGia']).' đ' ;?></td>
+                    <td><a href="khuyenmai/xuly.php?masp=<?php echo $row['MaSP'] ?>&apply2&makm=<?php echo $id ?>">Áp
+                            Dụng</a></td>
+                    <td class="custom-checkbox custom-control"><input type="checkbox" class="custom-control-input"
+                            id="<?php echo $row['MaSP']; ?>" name="chon[]" value="<?php echo $row['MaSP']; ?>">
+                        <label class="custom-control-label" for="<?php echo $row['MaSP']; ?>"></label>
+                    </td>
+                </tr>
+            </tbody>
+
+            <?php } ?>
+
+        </table>
+        <input hidden name="makm" value="<?php echo $id ?>">
+        <br>
+        <hr class="badge-info">
+        <center><input class="btn btn-outline-primary  " type="submit" name="apply" value="apply"></center>
+
+    </div>
+    <br>
+</form>
+<hr class="badge-info"><?php 	
+}
+
+?>
