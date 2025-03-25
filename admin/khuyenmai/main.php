@@ -3,7 +3,7 @@
 		$view=$_GET['view'];
 		switch ($view) {
 			case 'sua':
-	
+
 					include_once('khuyenmai/sua.php');
 				break;
 			case 'apply':

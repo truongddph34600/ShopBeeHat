@@ -8,7 +8,7 @@ include_once('../../model/database.php');
 		if ($_GET['pt']){ $pt=$_GET['pt']; } else { $pt=0; }
 		$mt=$_GET['mt'];
 		$sql="INSERT INTO `khuyenmai`( `TenKM`, `MoTa`, `KM_PT`, `TienKM`, `NgayBD`, `NgayKT`)
-							 VALUES ('$tkm','$mt',$pt,$tg,'$nbd','$nkt')";
+		 VALUES ('$tkm','$mt',$pt,$tg,'$nbd','$nkt')";
 		$rs=mysqli_query($conn,$sql);
 		if(isset($rs)){
 			header('location:../index.php?action=khuyenmai&thongbao=them');
@@ -61,7 +61,7 @@ include_once('../../model/database.php');
 				header('location:../index.php?action=khuyenmai&thongbao=them');
 			}
 		
-		
+
 	}
 
 ?>
