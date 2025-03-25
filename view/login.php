@@ -16,3 +16,42 @@
         integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 </head>
 <!--Coded with love by Mutiullah Samim-->
+<body>
+
+
+                </div>
+                <div class="d-flex justify-content-center form_container">
+                    <form method="post" action="login.php">
+                        <div class="input-group mb-3" >
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                            </div>
+                            <input type="text" name="email" class="form-control input_user" value="" required
+                                placeholder="email">
+                        </div>
+                        <div class="input-group mb-2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fas fa-key"></i></span>
+                            </div>
+                            <input type="password" name="password" class="form-control input_pass" value="" required
+                                placeholder="password">
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-3 login_container">
+                            <button type="submit" name="login" class="btn login_btn">Đăng nhập</button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="mt-4">
+                    <div class="d-flex justify-content-center links">
+                        Không có tài khoản <a href="../?view=sign-up" class="text-decoration-none ml-2 ">Đăng ký</a>
+                    </div>
+                    <div class="d-flex justify-content-center links">
+                        <a href="#" class="text-decoration-none"></a>Quên mật khẩu?</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
