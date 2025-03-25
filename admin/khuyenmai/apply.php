@@ -57,6 +57,8 @@ if(isset($_POST['btsearch'])){
                     <th>Thương hiệu</th>
                     <th>Đơn Giá</th>
                     <th class="badge-danger">chọn 1</th>
+                    <th class="badge-danger">chọn 2</th>
+                    <th class="badge-danger">chọn 3</th>
                     <th class="badge-light">
                         <input class="btn btn-outline-primary" type="button" id="btn1" value="tất cả" />
                         <input class="btn btn-outline-dark" type="button" id="btn2" value="Hủy" />
