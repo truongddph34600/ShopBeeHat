@@ -9,7 +9,14 @@
 			<table class="table table-hover m-auto text-center" >
 				<thead class="badge-info" style="font-size: 14px;">
 					<tr>
-						<th>Mã KM</th><th>Tên khuyến mãi</th><th>%</th><th> Giá</th><th>Mô Tả</th><th>Ngày bắt đầu</th><th>Ngày kết thúc </th><th class="badge-danger" colspan="3"></th>
+						<th>Mã KM</th>
+						<th>Tên khuyến mãi</th>
+						<th>%</th>
+						<th> Giá</th>
+						<th>Mô Tả</th>
+						<th>Ngày bắt đầu</th>
+						<th>Ngày kết thúc </th>
+						<th class="badge-danger" colspan="3"></th>
 					</tr>
 				</thead>
 				<tbody  style="font-size: 12px;">
