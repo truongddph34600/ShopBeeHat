@@ -26,13 +26,17 @@
                 <label class="m-auto" for="th">% Giảm Giá</label><input type="text" class="form-control" name="pt">
             </div>
             <div class="form-group col-sm-4">
-                <label class="m-auto" for="th">Mô Tả</label><textarea class="form-control" name="mt"
-                    required></textarea>
+                <label class="m-auto" for="th">Mô Tả</label>
+                <textarea class="form-control" name="mt"
+                    required>
+                </textarea>
             </div>
 
             <div class="form-group col-sm-4 "></div>
-            <div class="form-group col-sm-3 "><label>&emsp;</label><input type="submit" class="form-control badge-info"
-                    name="them" value="Thêm"></div>
+            <div class="form-group col-sm-3 "><label>&emsp;</label>
+            <input type="submit" class="form-control badge-info"
+                    name="them" value="Thêm">
+                </div>
             <hr>
         </form>
         <br>
