@@ -55,3 +55,25 @@
         </div>
     </div>
 </body>
+
+</html>
+<?php
+// check login
+include("../model/database.php");
+@session_start();
+if (isset($_SESSION['laclac_khachang'])) {
+	header('location:../?view');
+ }
+if(isset($_POST['login'])){
+	$email=$_POST['email'];
+	$pass=$_POST['password'];
+	$checklogin=checklogin($email,$pass);
+    if($checklogin==false){
+      	echo '<script>alert("Sai tài khoản hoặc mật khẩu ! Xin mời nhập lại .")</script>';
+    }else{
+		$row=mysqli_fetch_array($checklogin);
+		$_SESSION['laclac_khachang']=$row;
+		header('location:../?view');
+    }
+}
+?>
