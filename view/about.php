@@ -39,8 +39,7 @@
                 </div>
                     </div>
                 </div>
-                <div class="flexslider">
-                    <img src="webroot/image/slider/brand-2.jpg" alt="" width="100%" height="50%">
+
                 </div>
                 <div class="flexslider">
                     <h2 class="text-center">SPONSORSHIP</h2>
