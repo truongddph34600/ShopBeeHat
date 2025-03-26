@@ -45,7 +45,7 @@
 						<td><?php echo $row['Size']; ?></td><td><?php echo $row['MaMau']; ?></td>
 						
 					</tr>
-			 <?php	} ?>
+			 <?php } ?>
 					
 				</tbody>
 			</table><br><hr>
