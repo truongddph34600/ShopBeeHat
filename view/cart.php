@@ -198,6 +198,7 @@
         </div>
     </div>
 </div>
+
 <?php 
     if(isset($_GET['alert'])){ ?> 
     <div id="alertDiv" class="alert alert-success alert-dismissible fade custom-alert " role="alert">
@@ -208,6 +209,7 @@
     </div>
     
 <?php  }
+
 ?>
 <div class="flexslider">
     <img src="webroot/image/slider/brand-1.jpg" alt="" width="100%" height="50%">
