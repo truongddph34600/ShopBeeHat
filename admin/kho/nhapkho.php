@@ -1,3 +1,5 @@
+
+
 <h5 class="text-center">Phiếu Nhập</h5> <hr>
 		<table class="m-auto  ">
 			<thead class="table">
