@@ -1,39 +1,78 @@
 <?php
 include_once('../../model/database.php');
-// Thêm màu
-if(isset($_GET['themmau'])){
-    $mamau=$_GET['mamau'];
-    $sql="insert into mau(MaMau) values(N'$mamau')";
-    $rs=mysqli_query($conn,$sql);
-    if(isset($rs)){
-        header('location:../index.php?action=mau&view=themmau&thongbao=them');
-    }else{
-        header('location:../index.php?action=mau&view=themmau&thongbao=loi');
-    }
+
+// Hàm chuyển hướng và kết thúc script
+function redirect($url) {
+    header("Location: $url");
+    exit();
 }
-//----------------------------------------
-//Cập nhập
-if(isset($_GET['suamau'])){
-    $id=$_GET['id'];
-    $mamau=$_GET['mamau'];
-    $sql="UPDATE `mau` SET `MaMau`=N'$mamau' where MaMau='$id'";
-    $rs=mysqli_query($conn,$sql);
-    if(isset($rs)){
-        header('location:../index.php?action=mau&view=themmau&thongbao=sua');
-    }else{
-        header('location:../index.php?action=mau&view=themmau&thongbao=loi');
+
+// ===== THÊM MÀU =====
+if (isset($_GET['themmau'])) {
+    $mamau = trim($_GET['mamau'] ?? '');
+
+    if ($mamau === '') {
+        redirect('../index.php?action=mau&view=themmau&thongbao=trong');
+    }
+
+    // Kiểm tra màu đã tồn tại chưa
+    $check = mysqli_query($conn, "SELECT * FROM mau WHERE MaMau = '$mamau'");
+    if (mysqli_num_rows($check) > 0) {
+        redirect('../index.php?action=mau&view=themmau&thongbao=trung');
+    }
+
+    $sql = "INSERT INTO mau(MaMau) VALUES ('$mamau')";
+    $rs = mysqli_query($conn, $sql);
+
+    if ($rs) {
+        redirect('../index.php?action=mau&view=themmau&thongbao=them');
+    } else {
+        redirect('../index.php?action=mau&view=themmau&thongbao=loi');
     }
 }
 
-//----------------------------------------
-// xóa màu
-if(isset($_GET['xoa'])){
-    $mamau=$_GET['mamau'];
-    $sql="delete  from mau where MaMau='$mamau'";
-    $rs=mysqli_query($conn,$sql);
-    if(isset($rs)){
-        header('location:../index.php?action=mau&view=themmau&thongbao=xoa');
-    }else{
-        header('location:../index.php?action=mau&view=themmau&thongbao=loi');
+// ===== SỬA MÀU =====
+if (isset($_GET['suamau'])) {
+    $id = trim($_GET['id'] ?? '');
+    $mamau = trim($_GET['mamau'] ?? '');
+
+    if ($mamau === '' || $id === '') {
+        redirect('../index.php?action=mau&view=themmau&thongbao=trong');
+    }
+
+    // Kiểm tra trùng nếu đổi tên
+    if ($id !== $mamau) {
+        $check = mysqli_query($conn, "SELECT * FROM mau WHERE MaMau = '$mamau'");
+        if (mysqli_num_rows($check) > 0) {
+            redirect('../index.php?action=mau&view=themmau&thongbao=trung');
+        }
+    }
+
+    $sql = "UPDATE mau SET MaMau = '$mamau' WHERE MaMau = '$id'";
+    $rs = mysqli_query($conn, $sql);
+
+    if ($rs) {
+        redirect('../index.php?action=mau&view=themmau&thongbao=sua');
+    } else {
+        redirect('../index.php?action=mau&view=themmau&thongbao=loi');
     }
 }
+
+// ===== XOÁ MÀU =====
+if (isset($_GET['xoa'])) {
+    $mamau = trim($_GET['mamau'] ?? '');
+
+    if ($mamau === '') {
+        redirect('../index.php?action=mau&view=themmau&thongbao=trong');
+    }
+
+    $sql = "DELETE FROM mau WHERE MaMau = '$mamau'";
+    $rs = mysqli_query($conn, $sql);
+
+    if ($rs) {
+        redirect('../index.php?action=mau&view=themmau&thongbao=xoa');
+    } else {
+        redirect('../index.php?action=mau&view=themmau&thongbao=loi');
+    }
+}
+?>
