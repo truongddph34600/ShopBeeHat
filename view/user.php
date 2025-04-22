@@ -1,9 +1,9 @@
 <?php
-if (!isset($_SESSION['laclac_khachang'])) {
+if (!isset($_SESSION['laclac_khachang']) || !is_array($_SESSION['laclac_khachang'])) {
     header('location:?view=login');
-}else{
-    $kh= $_SESSION['laclac_khachang'];
+    exit();
 }
+
 ?>
 <div class="breadcrumbs">
     <div class="container">
@@ -87,45 +87,77 @@ if (!isset($_SESSION['laclac_khachang'])) {
                                         <th class="fw-bold">ngày giao</th>
                                         </tr>
                                     </thead>
-                                    <tbody><?php  $bill=bill_user($kh['MaKH']);
-                                        if ($bill==false) { echo '<p>bạn chưa có đơn hàng</p>'; }else{  $stt=1; while ($row=mysqli_fetch_array($bill)) { ?>
-                                        <tr>
-                                            <th scope="row"  class=" align-middle"><?php  echo $stt++; ?></th>
-                                            <td>
-                                                <div class="d-flex align-items-center">
-                                                    <div class="ms-2">
-                                                        <?php   $bill_detail=bill_detail($row['MaHD']);
-                                                        while ($row1=mysqli_fetch_array($bill_detail)) { 
-                                                            $product=mysqli_fetch_array(product($row1['MaSP']));  ?>
-                                                                <p class=" mb-1"><?php echo $row1['SoLuong'].' x '.$product['TenSP']; ?></p> 
-                                                        <?php } ?>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td>
-                                            <?php   $bill_detail=bill_detail($row['MaHD']);
-                                                        while ($row1=mysqli_fetch_array($bill_detail)) { 
-                                                            $product=mysqli_fetch_array(product($row1['MaSP']));  ?>
-                                                                <p class=" mb-1"><?php echo $row1['Size'].' x ' .$row1['MaMau']; ?></p> 
-                                                        <?php } ?>
-                                            </td>
-                                            <td>
-                                            <?php   $bill_detail=bill_detail($row['MaHD']);
-                                                        while ($row1=mysqli_fetch_array($bill_detail)) { 
-                                                            $product=mysqli_fetch_array(product($row1['MaSP']));  ?>
-                                                                <p class=" mb-1"><?php echo number_format($row1['ThanhTien']); ?></p> 
-                                                        <?php } ?>
-                                            </td>
-                                            <td class=" align-middle"> <?php echo number_format($row['TongTien']);?> </td>
-                                            <td class=" align-middle">
-                                                <span class="badge badge-success rounded-pill d-inline"><?php echo $row['TinhTrang']; ?></span>
-                                            </td>
-                                            <td class=" align-middle"><?php echo $row['NgayDat'] ;?></td>
-                                            <td class=" align-middle"> <?php echo $row['NgayGiao'] ;?></td> 
-                                        </tr>   
-                                        <?php    } 
-                                        }
-                                    ?>                          
+                                    <tbody>    <?php  
+$bill = bill_user($kh['MaKH']);
+
+if (!$bill || mysqli_num_rows($bill) == 0) {
+    echo '<p>Bạn chưa có đơn hàng</p>';
+} else {
+    $stt = 1;
+    while ($row = mysqli_fetch_array($bill)) {
+        $bill_detail = bill_detail($row['MaHD']);
+
+        // Mảng chứa thông tin chi tiết đơn hàng
+        $details = [];
+
+        while ($row1 = mysqli_fetch_array($bill_detail)) {
+            $product = mysqli_fetch_array(product($row1['MaSP']));
+            $details[] = [
+                'TenSP' => $product['TenSP'],
+                'SoLuong' => $row1['SoLuong'],
+                'Size' => $row1['Size'],
+                'MaMau' => $row1['MaMau'],
+                'ThanhTien' => $row1['ThanhTien']
+            ];
+        }
+?>
+<tr>
+    <th scope="row" class="align-middle"><?php echo $stt++; ?></th>
+
+    <!-- Tên sản phẩm và số lượng -->
+    <td>
+        <div class="d-flex align-items-center">
+            <div class="ms-2">
+                <?php foreach ($details as $item) { ?>
+                    <p class="mb-1"><?php echo $item['SoLuong'] . ' x ' . $item['TenSP']; ?></p>
+                <?php } ?>
+            </div>
+        </div>
+    </td>
+
+    <!-- Size / Màu -->
+    <td>
+        <?php foreach ($details as $item) { ?>
+            <p class="mb-1"><?php echo $item['Size'] . ' / ' . $item['MaMau']; ?></p>
+        <?php } ?>
+    </td>
+
+    <!-- Giá từng sản phẩm -->
+    <td>
+        <?php foreach ($details as $item) { ?>
+            <p class="mb-1"><?php echo number_format($item['ThanhTien']); ?>₫</p>
+        <?php } ?>
+    </td>
+
+    <!-- Tổng cộng -->
+    <td class="align-middle"><?php echo number_format($row['TongTien']); ?>₫</td>
+
+    <!-- Tình trạng -->
+    <td class="align-middle">
+        <span class="badge badge-success rounded-pill d-inline"><?php echo $row['TinhTrang']; ?></span>
+    </td>
+
+    <!-- Ngày đặt -->
+    <td class="align-middle"><?php echo $row['NgayDat']; ?></td>
+
+    <!-- Ngày giao -->
+    <td class="align-middle"><?php echo $row['NgayGiao']; ?></td>
+</tr>
+<?php 
+    } // end while bill
+} // end else
+?>
+                   
                                     </tbody>
                                     </table>
                                 
