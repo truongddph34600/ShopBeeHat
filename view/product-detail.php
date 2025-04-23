@@ -1,14 +1,23 @@
 <?php
-    if (isset($_GET['id'])==false) {header('Location:?view'); }
-    $id = $_GET['id'];
-    if ( product($id)==false) { header('Location:?view');}
-    $product=mysqli_fetch_array(product($id));  
-    $price_sale=price_sale($product['MaSP'],$product['DonGia']);
-    $product_detail_size=product_detail_size($id);
-    $product_detail_color=product_detail_color($id);
-    $product_review=product_review($id);
-    if(product_detail_image($id)==false){$product_detail_image=array('Anh1'=>'loader.gif','Anh2'=>'loader.gif','Anh3'=>'loader.gif','Anh4'=>'loader.gif'); }else{ $product_detail_image=mysqli_fetch_array(product_detail_image($id));}
+if (empty($_GET['id']) || !product($_GET['id'])) {
+    header('Location:?view');
+    exit;
+}
+
+$id = $_GET['id'];
+$product = mysqli_fetch_array(product($id));
+$price_sale = price_sale($product['MaSP'], $product['DonGia']);
+
+$product_detail_size = product_detail_size($id);
+$product_detail_color = product_detail_color($id);
+$product_review = product_review($id);
+
+$product_detail_image = product_detail_image($id);
+$product_detail_image = ($product_detail_image)
+    ? mysqli_fetch_array($product_detail_image)
+    : ['Anh1' => 'loader.gif', 'Anh2' => 'loader.gif', 'Anh3' => 'loader.gif', 'Anh4' => 'loader.gif'];
 ?>
+
 <div class="breadcrumbs">
     <div class="container">
         <div class="row">
