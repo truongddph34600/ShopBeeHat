@@ -32,42 +32,23 @@ $product_detail_image = ($product_detail_image)
         <div class="row row-pb-lg product-detail-wrap">
             <div class="col-sm-8">
                 <div class="owl-carousel">
-                    <div class="item">
-                        <div class="product-entry border">
-                            <a href="#" class="prod-img">
-                                <img src="webroot/image/sanpham/<?php echo $product_detail_image['Anh1'] ?>" class="img-fluid" alt="Dinh Tri code ">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="product-entry border">
-                            <a href="#" class="prod-img">
-                                <img src="webroot/image/sanpham/<?php echo $product_detail_image['Anh2'] ?>" class="img-fluid" alt="Dinh Tri code ">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="product-entry border">
-                            <a href="#" class="prod-img">
-                                <img src="webroot/image/sanpham/<?php echo $product_detail_image['Anh3'] ?>" class="img-fluid" alt="Dinh Tri code ">
-                            </a>
-                        </div>
-                    </div>
-                    <div class="item">
-                        <div class="product-entry border">
-                            <a href="#" class="prod-img">
-                                <img src="webroot/image/sanpham/<?php echo $product_detail_image['Anh4'] ?>" class="img-fluid" alt="Dinh Tri code ">
-                            </a>
-                        </div>
-                    </div>
+                <?php for ($i = 1; $i <= 4; $i++): ?>
+    <div class="item">
+        <div class="product-entry border">
+            <a href="#" class="prod-img">
+                <img src="webroot/image/sanpham/<?php echo $product_detail_image["Anh$i"]; ?>" class="img-fluid" alt="Ảnh sản phẩm">
+            </a>
+        </div>
+    </div>
+<?php endfor; ?>
                 </div>
             </div>
             <form class="col-sm-4" action="?view=addtocart" method="post" id="form1">
                 <div class="product-desc">
                     <h3><?php echo $product['TenSP']; ?></h3>
-                    <p class="price">
+                    <pass="price">
                         <span><?php echo number_format($price_sale,0).'₫'; ?></span> 
-                        <?php if(number_format($product['DonGia']) !== number_format($price_sale)){ ?>
+                        <?php if ((float)$product['DonGia'] !== (float)$price_sale){ ?>
                         <span class="price-old"><?php echo  number_format($product['DonGia'], 0 ).' '.' ₫' ; ?></span> <?php } ?>
                         <span class="rate">
                             <i class="fas fa-star"></i>
