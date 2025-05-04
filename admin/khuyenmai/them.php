@@ -1,54 +1,39 @@
 <div class="container-fluid">
-    <!-- Tiêu đề -->
-    <div class="alert alert-primary">
+    <div class=" alert alert-primary">
         <h4 class="page-title">
-            <i class="fas fa-plus-circle text-primary"></i> Thêm Khuyến Mãi
+            <span class="page-title-icon bg-gradient-primary text-white mr-2">
+            </span> ADMIN &#160;<i class="fas fa-chevron-right" style="font-size: 18px"></i>&#160; Khuyến mãi
         </h4>
     </div>
-
-    <!-- Form thêm -->
-    <div class="card card-body shadow-sm">
-        <form class="form-row" method="GET" action="khuyenmai/xuly.php" enctype="multipart/form-data">
-            <!-- Tên khuyến mãi -->
-            <div class="form-group col-md-4">
-                <label for="tkm">Tên khuyến mãi</label>
-                <input type="text" class="form-control" name="tkm" placeholder="Nhập tên khuyến mãi" required>
+    <div class="card card-body ">
+        <form class="form-row " method="GET" action="khuyenmai/xuly.php" enctype="multipart/form-data">
+            <div class="form-group col-sm-4">
+                <label class="m-auto" for="th">Tên khuyến mãi</label><input type="text" class="form-control" name="tkm"
+                    required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label class="m-auto" for="th">Ngày bắt đầu</label><input type="date" class="form-control" name="nbd"
+                    required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label class="m-auto" for="th">Ngày kết thúc</label><input type="date" class="form-control" name="nkt"
+                    required>
+            </div>
+            <div class="form-group col-sm-4">
+                <label class="m-auto" for="th">Tiền Giảm Giá</label><input type="text" class="form-control" name="t">
+            </div>
+            <div class="form-group col-sm-4">
+                <label class="m-auto" for="th">% Giảm Giá</label><input type="text" class="form-control" name="pt">
+            </div>
+            <div class="form-group col-sm-4">
+                <label class="m-auto" for="th">Mô Tả</label><textarea class="form-control" name="mt"
+                    required></textarea>
             </div>
 
-            <!-- Ngày bắt đầu -->
-            <div class="form-group col-md-4">
-                <label for="nbd">Ngày bắt đầu</label>
-                <input type="date" class="form-control" name="nbd" required>
-            </div>
-
-            <!-- Ngày kết thúc -->
-            <div class="form-group col-md-4">
-                <label for="nkt">Ngày kết thúc</label>
-                <input type="date" class="form-control" name="nkt" required>
-            </div>
-
-            <!-- Tiền giảm giá -->
-            <div class="form-group col-md-4">
-                <label for="t">Tiền giảm giá (VNĐ)</label>
-                <input type="number" class="form-control" name="t" placeholder="Nhập số tiền giảm" min="0">
-            </div>
-
-            <!-- Phần trăm khuyến mãi -->
-            <div class="form-group col-md-4">
-                <label for="pt">% giảm giá</label>
-                <input type="number" class="form-control" name="pt" placeholder="Nhập % giảm" min="0" max="100">
-            </div>
-
-            <!-- Mô tả -->
-            <div class="form-group col-md-4">
-                <label for="mt">Mô tả</label>
-                <textarea class="form-control" name="mt" rows="3" placeholder="Nhập mô tả chi tiết" required></textarea>
-            </div>
-
-            <!-- Nút thêm -->
-            <div class="form-group col-md-12 text-center mt-3">
-                <input type="submit" class="btn btn-success px-4" name="them" value="Thêm khuyến mãi">
-            </div>
+            <div class="form-group col-sm-4 "></div>
+            <div class="form-group col-sm-3 "><label>&emsp;</label><input type="submit" class="form-control badge-info"
+                    name="them" value="Thêm"></div>
+            <hr>
         </form>
-    </div>
-</div>
+        <br>
+        <hr>
