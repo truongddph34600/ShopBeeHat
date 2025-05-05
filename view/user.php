@@ -48,7 +48,7 @@ if (!isset($_SESSION['laclac_khachang'])) {
                   href="#pills-info"
                   role="tab"
                   aria-controls="pills-info"
-                >Thông Tin</a>
+                >Đổi Thông Tin và Mật Khẩu</a>
             </li>
             <li class="nav-item">
                 <a
@@ -95,6 +95,7 @@ if (!isset($_SESSION['laclac_khachang'])) {
                           name="ten"
                           class="form-control"
                           value="<?php echo htmlspecialchars($kh['TenKH']); ?>"
+                          data-initial-value="<?php echo htmlspecialchars($kh['TenKH']); ?>"
                         >
                     </div>
                     <div class="form-group">
@@ -104,6 +105,7 @@ if (!isset($_SESSION['laclac_khachang'])) {
                           name="sdt"
                           class="form-control"
                           value="<?php echo htmlspecialchars($kh['SDT']); ?>"
+                          data-initial-value="<?php echo htmlspecialchars($kh['SDT']); ?>"
                         >
                     </div>
                     <div class="form-group">
@@ -113,6 +115,7 @@ if (!isset($_SESSION['laclac_khachang'])) {
                           name="dc"
                           class="form-control"
                           value="<?php echo htmlspecialchars($kh['DiaChi']); ?>"
+                          data-initial-value="<?php echo htmlspecialchars($kh['DiaChi']); ?>"
                         >
                     </div>
                     <div class="form-group">
@@ -124,6 +127,7 @@ if (!isset($_SESSION['laclac_khachang'])) {
                               name="password"
                               class="form-control"
                               value="<?php echo htmlspecialchars($kh['MatKhau']); ?>"
+                              data-initial-value="<?php echo htmlspecialchars($kh['MatKhau']); ?>"
                             >
                             <div class="input-group-append">
                                 <button class="btn btn-outline-secondary" type="button" onclick="togglePasswordVisibility()">
@@ -242,6 +246,41 @@ function togglePasswordVisibility() {
         pw.type = 'password';
     }
 }
+
+// Validate form
+document.getElementById('info_form').addEventListener('submit', function(e) {
+    let hasChange = false;
+
+    // Kiểm tra các trường có thể thay đổi
+    const fieldsToCheck = ['ten', 'sdt', 'dc', 'password'];
+    const inputs = this.elements;
+
+    fieldsToCheck.forEach(fieldName => {
+        const input = inputs[fieldName];
+        const initialValue = input.getAttribute('data-initial-value');
+        if (input.value !== initialValue) {
+            hasChange = true;
+        }
+    });
+
+    if (!hasChange) {
+        alert('Bạn chưa có thay đổi gì');
+        e.preventDefault();
+        return false;
+    }
+    else {
+        const confirmChange = confirm('Bạn có chắc chắn thay đổi không?');
+        if (!confirmChange) {
+            e.preventDefault();
+            // Khôi phục giá trị ban đầu
+            fieldsToCheck.forEach(fieldName => {
+                const input = inputs[fieldName];
+                input.value = input.getAttribute('data-initial-value');
+            });
+            return false;
+        }
+    }
+});
 </script>
 </body>
 </html>
@@ -257,7 +296,7 @@ if (isset($_POST['luu'])) {
 
     if (update_user($id, $ten, $sdt, $dc, $matkhau)) {
         $_SESSION['laclac_khachang'] = selectKH($id);
-        header('location:?view=user&alert=Đã lưu');
+        header('location:?view=user&alert=');
         exit;
     } else {
         echo '<script>alert("Có lỗi xảy ra, vui lòng thử lại.");</script>';
