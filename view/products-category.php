@@ -86,7 +86,7 @@ if ($key !== '') {
     </div>
 </div>
 <div class="flexslider">
-    <img src="webroot/image/slider/brand-2.jpg" alt="" width="100%" height="50%">
+    <img src="webroot/image/slider/brand2.png" alt="" width="100%" height="50%">
 </div>
 <div class="flexslider">
     <h2 class="text-center">SPONSORSHIP</h2>
@@ -94,7 +94,7 @@ if ($key !== '') {
     <div class="row justify-content-center">
         <?php for ($i = 1; $i <= 5; $i++) { ?>
             <div class="col-6 col-sm-4 col-md-2 p-2">
-                <img src="webroot/image/brand/spon<?php echo $i; ?>.jpeg" class="img-fluid" alt="Sponsor <?php echo $i; ?>">
+                <img src="webroot/image/brand/mau<?php echo $i; ?>.jpg" class="img-fluid" alt="mau <?php echo $i; ?>">
             </div>
         <?php } ?>
     </div>
