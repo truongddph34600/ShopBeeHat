@@ -1,7 +1,7 @@
 <?php
 // kết nối database
     $servername = "localhost";
-    $database = "pgm_sql";
+    $database = "beehat";
     $username = "root";
     $password = "";
 
