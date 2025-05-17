@@ -13,12 +13,11 @@
 					include_once('khachhang/xoa.php?view='.$view);
 				break;
 			default:
-
 				break;
 		}
 	}
 	else{
-		include_once('khachhang/thongtin.php');
+		include_once('khachhang/danhsach.php');
 	}
 
 
