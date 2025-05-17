@@ -44,17 +44,19 @@
 
     <style>
         :root {
-            --primary-color: #f85a16;
+            --primary-color: #ffc107;
             --secondary-color: #333333;
-            --light-color: #f8f9fa;
+            --light-color: #FFFFFF;
             --dark-color: #212529;
             --accent-color: #ffc107;
         }
 
         body {
-            font-family: 'Montserrat', 'Roboto', sans-serif;
-            scroll-behavior: smooth;
-        }
+                        font-family: 'Roboto', sans-serif;
+                        background-color: #f9f9f9;
+                        color: #444;
+                        line-height: 1.7;
+                    }
 
         .top-header {
             background-color: var(--light-color);
@@ -256,25 +258,19 @@
             <div class="top-header">
                 <div class="container">
                     <div class="row align-items-center py-2">
+                        <!-- Logo -->
+                                                <div class="col-lg-4 col-md-4 col-8 text-center">
+                                                    <div id="site-logo">
+                                                        <a href="?view">
+                                                            <img class="logo-header img-fluid" src="webroot/image/logo/logos.png" alt="BeeHat Logo">
+                                                        </a>
+                                                    </div>
+                                                </div>
                         <!-- Contact Information -->
                         <div class="col-lg-4 col-md-4 d-none d-md-block">
                             <div class="d-flex align-items-center">
-                                <a href="tel:+84832091111" class="text-dark me-4 text-decoration-none">
-                                    <i class="fa-solid fa-phone me-2"></i>
-                                    <span>+84 832 091 111</span>
-                                </a>
                             </div>
                         </div>
-
-                        <!-- Logo -->
-                        <div class="col-lg-4 col-md-4 col-8 text-center">
-                            <div id="site-logo">
-                                <a href="?view">
-                                    <img class="logo-header img-fluid" src="webroot/image/logo/logos.png" alt="BeeHat Logo">
-                                </a>
-                            </div>
-                        </div>
-
                         <!-- User and Cart -->
                         <div class="col-lg-4 col-md-4 col-4 d-flex justify-content-end align-items-center">
                             <div class="header-actions">

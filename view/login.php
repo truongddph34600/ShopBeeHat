@@ -15,9 +15,15 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
         integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 </head>
-<!--Coded with love by Mutiullah Samim-->
-<body>
 
+<body>
+    <div class="container h-100">
+        <div class="d-flex justify-content-center h-100">
+            <div class="user_card">
+                <div class="d-flex justify-content-center">
+                    <div class="brand_logo_container">
+                        <img src="../webroot/image/logo/logo.png" class="brand_logo" alt="Logo">
+                    </div>
 
                 </div>
                 <div class="d-flex justify-content-center form_container">
@@ -48,7 +54,6 @@
                         Không có tài khoản <a href="../?view=sign-up" class="text-decoration-none ml-2 ">Đăng ký</a>
                     </div>
                     <div class="d-flex justify-content-center links">
-                        <a href="#" class="text-decoration-none"></a>Quên mật khẩu?</a>
                     </div>
                 </div>
             </div>

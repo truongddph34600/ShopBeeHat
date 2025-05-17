@@ -1,16 +1,17 @@
+
 <aside id="colorlib-hero">
     <div class="flexslider">
         <ul class="slides">
-            <li style="background-image: url('webroot/image/slider/banner9.jpg');">
+            <li style="background-image: url('webroot/image/slider/slide1.jpg');">
                 <div class="overlay"></div>
             </li>
-            <li style="background-image: url('webroot/image/slider/banner7.jpg');">
+            <li style="background-image: url('webroot/image/slider/slide2.jpg');">
                 <div class="overlay"></div>
             </li>
-            <li style="background-image: url('webroot/image/slider/banner8.jpg');">
+            <li style="background-image: url('webroot/image/slider/slide4.jpg');">
                 <div class="overlay"></div>
             </li>
-            <li style="background-image: url('webroot/image/slider/banner6.jpg');">
+            <li style="background-image: url('webroot/image/slider/slide1.jpg');">
                 <div class="overlay"></div>
             </li>
         </ul>
@@ -28,10 +29,6 @@
         <?php
         $product = featuredProductsL4();
         ?>
-
-
-
-
 
 <div class="container ">
             <div class="row wrapper-dt">
@@ -75,9 +72,8 @@
 
     </div>
 </div>
-<div class="flexslider">
-    <img src="webroot/image/slider/brand-2.jpg" alt="" width="100%" height="50%">
-</div>
+
+
 
 <div class="colorlib-product">
     <div class="container">
@@ -130,27 +126,6 @@
             </div>
         </div>
 
-    </div>
-</div>
-<div class="flexslider">
-    <h2 class="text-center">SPONSORSHIP</h2>
-    <p class="text-center">Ngắm nhìn những bức ảnh từ khách hàng của chúng tôi</p>
-    <div class="row justify-content-center">
-        <div class="col-6 col-sm-4 col-md-2 p-2">
-            <img src="webroot/image/brand/spon1.jpeg" class="img-fluid" alt="Sponsor 1">
-        </div>
-        <div class="col-6 col-sm-4 col-md-2 p-2">
-            <img src="webroot/image/brand/spon2.jpeg" class="img-fluid" alt="Sponsor 2">
-        </div>
-        <div class="col-6 col-sm-4 col-md-2 p-2">
-            <img src="webroot/image/brand/spon3.jpeg" class="img-fluid" alt="Sponsor 3">
-        </div>
-        <div class="col-6 col-sm-4 col-md-2 p-2">
-            <img src="webroot/image/brand/spon4.jpeg" class="img-fluid" alt="Sponsor 4">
-        </div>
-        <div class="col-6 col-sm-4 col-md-2 p-2">
-            <img src="webroot/image/brand/spon5.jpeg" class="img-fluid" alt="Sponsor 5">
-        </div>
     </div>
 </div>
 
@@ -209,21 +184,46 @@
     </div>
 </div>
 
-    <div class="flexslider">
-        <h2 class="text-center">TIN TỨC</h2>
-        <p class="text-center">Cập nhật những tin tức mới nhất về xu hướng thời trang</p>
-        <div class="row justify-content-center">
-            <div class="col-4 col-md-2 mt-5 mb-5">
-                <img src="webroot/image/brand/tt1.jpeg" class="img-fluid" alt="Sponsor 1">
-                <p class="fw-bold">FORM DÁNG THAM KHẢO TẠI PGM</p>
+<div class="brand-showcase py-5 bg-light">
+    <div class="container">
+        <div class="text-center mb-5">
+            <h2 class="display-6 fw-bold mb-3 text-primary">
+                <i class="fas fa-handshake me-2"></i>Đối Tác Danh Tiếng
+            </h2>
+            <p class="lead text-muted">Cùng hợp tác với những thương hiệu hàng đầu thế giới</p>
+        </div>
+
+        <div class="row g-4 justify-content-center">
+            <div class="col-6 col-md-4 col-lg-2">
+                <div class="brand-card hover-lift">
+                    <img src="webroot/image/brand/gucci.jpg" alt="Brand 1" class="img-fluid rounded-3 shadow">
+                </div>
             </div>
-            <div class="col-8 col-md-4 ">
-                <img src="webroot/image/brand/tt2.jpeg" class="img-fluid" alt="Sponsor 2">
-                <p class="fw-bold">CHÍNH SÁCH BẢO HÀNH ÁO DA TẠI PGM</p>
-            </div>
-            <div class="col-4 col-md-2 mt-5 mb-5">
-                <img src="webroot/image/brand/tt3.jpeg" class="img-fluid" alt="Sponsor 3">
-                <p class="fw-bold">HƯỚNG DẪN CÁCH GIẶT BẢO QUẢN SẢN PHẨM PGM</p>
-            </div>
+        <div class="col-6 col-md-4 col-lg-2">
+                        <div class="brand-card hover-lift">
+                            <img src="webroot/image/brand/adidas.jpg" alt="Brand 2" class="img-fluid rounded-3 shadow">
+                        </div>
+                    </div>
+                <div class="col-6 col-md-4 col-lg-2">
+                                <div class="brand-card hover-lift">
+                                    <img src="webroot/image/brand/nike.jpg" alt="Brand 3" class="img-fluid rounded-3 shadow">
+                                </div>
+                            </div>
+                        <div class="col-6 col-md-4 col-lg-2">
+                                        <div class="brand-card hover-lift">
+                                            <img src="webroot/image/brand/varsace.jpg" alt="Brand 4" class="img-fluid rounded-3 shadow">
+                                        </div>
+                                    </div>
+                                <div class="col-6 col-md-4 col-lg-2">
+                                                <div class="brand-card hover-lift">
+                                                    <img src="webroot/image/brand/louisvuitton.jpg" alt="Brand 5" class="img-fluid rounded-3 shadow">
+                                                </div>
+
+                                            </div>
+
+
+            <!-- Repeat similar blocks for other brand images -->
         </div>
     </div>
+
+</div>

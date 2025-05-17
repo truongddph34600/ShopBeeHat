@@ -1,6 +1,24 @@
 
 <?php
 include_once('../../model/database.php');
+//----------------------------------------
+	//Cập nhập
+	if(isset($_POST['them'])){
+		$ten=$_POST['tennv'];
+		$email=$_POST['email'];
+		$sdt=$_POST['sdt'];
+		$dc=$_POST['dc'];
+		$q=$_POST['q'];
+		$mk=$_POST['mk'];
+		$sql="INSERT INTO `nhanvien`( `TenNV`, `Email`, `SDT`, `DiaChi`, `Quyen`,`MatKhau` ) VALUES ('$ten','$email','$sdt','$dc','$q','$mk')";
+		$rs=mysqli_query($conn,$sql);
+		if(isset($rs)){
+			header('location:../index.php?action=nhanvien&thongbao=them');
+		}else{
+			header('location:../index.php?action=nhanvien&thongbao=loi');
+		}
+	}
+
 	// sua
 	if(isset($_POST['sua'])){
 		$manv=$_POST['manv'];
@@ -14,23 +32,6 @@ include_once('../../model/database.php');
 		$rs=mysqli_query($conn,$sql);
 		if(isset($rs)){
 			header('location:../index.php?action=nhanvien&thongbao=sua');
-		}else{
-			header('location:../index.php?action=nhanvien&thongbao=loi');
-		}
-	}
-	//----------------------------------------
-	//Cập nhập
-	if(isset($_POST['them'])){
-		$ten=$_POST['tennv'];
-		$email=$_POST['email'];
-		$sdt=$_POST['sdt'];
-		$dc=$_POST['dc'];
-		$q=$_POST['q'];
-		$mk=$_POST['mk'];
-		$sql="INSERT INTO `nhanvien`( `TenNV`, `Email`, `SDT`, `DiaChi`, `Quyen`,`MatKhau` ) VALUES ('$ten','$email','$sdt','$dc','$q','$mk')";
-		$rs=mysqli_query($conn,$sql);
-		if(isset($rs)){
-			header('location:../index.php?action=nhanvien&thongbao=them');
 		}else{
 			header('location:../index.php?action=nhanvien&thongbao=loi');
 		}

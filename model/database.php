@@ -12,6 +12,14 @@
         die("Connection failed: " . mysqli_connect_error());
     }
 
+   // File: commons/functions.php
+   // Thêm hàm sắp xếp sản phẩm theo giá tăng dần
+   function product_sort_price_asc() {
+       global $conn;
+       $sql = "SELECT * FROM sanpham ORDER BY DonGia ASC";
+       return mysqli_query($conn, $sql);
+       }
+
 // -------------------------
 function selectdata($sql)
 {
@@ -111,6 +119,18 @@ function product_search($key){
       return  $resulf;
     }
   mysqli_close($conn);
+}
+function product_all_sorted($order = 'ASC') {
+    global $conn;
+    $order = strtoupper($order) === 'DESC' ? 'DESC' : 'ASC';
+    $sql = "SELECT * FROM sanpham ORDER BY DonGia $order";
+    return mysqli_query($conn, $sql);
+}
+function product_by_category($category) {
+    global $conn;
+    $catId = intval($category);
+    $sql   = "SELECT * FROM sanpham WHERE MaLoaiSP = {$catId}";
+    return mysqli_query($conn, $sql);
 }
 // lấy 1 product
 function product($id){
@@ -238,14 +258,14 @@ if (isset($_POST["functionName"])) {
 }
 function check_coupon($id){
   global $conn;
-  $sql="SELECT * FROM `phieugiamgia` WHERE `id` = '$id'";
+  $sql="SELECT * FROM `phieugiamgia` WHERE `TenGG` = '$id'";
   $resulf = mysqli_query($conn ,$sql);
   $count=mysqli_num_rows($resulf);
   if($count==0){
     return $coupon=0;
   }else{
     $coupon=mysqli_fetch_array($resulf);
-    return number_format( $coupon['SoTien']);
+    return number_format( $coupon['TienGG']);
   }
 mysqli_close($conn);
 }
@@ -450,6 +470,66 @@ function bill_user($id){
     }
   mysqli_close($conn);
 }
+
+// phiếu giảm giá
+// ------------------ PHIẾU GIẢM GIÁ MODEL ------------------
+
+// 1. Lấy tất cả phiếu giảm giá
+function couponAll() {
+    global $conn;
+    $sql = "SELECT * FROM phieugiamgia ORDER BY id DESC";
+    $res = mysqli_query($conn, $sql);
+    if (!$res || mysqli_num_rows($res) === 0) {
+        return [];
+    }
+    $coupons = [];
+    while ($row = mysqli_fetch_assoc($res)) {
+        $coupons[] = $row;
+    }
+    return $coupons;
+}
+
+// 2. Lấy 1 phiếu theo id
+function couponGet($id) {
+    global $conn;
+    $id   = intval($id);
+    $sql  = "SELECT * FROM phieugiamgia WHERE id = $id";
+    $res  = mysqli_query($conn, $sql);
+    if ($res && mysqli_num_rows($res) === 1) {
+        return mysqli_fetch_assoc($res);
+    }
+    return null;
+}
+
+// 3. Thêm mới phiếu giảm giá
+function couponCreate($tenPhieu, $soTien) {
+    global $conn;
+    $ten    = mysqli_real_escape_string($conn, $tenPhieu);
+    $st     = floatval($soTien);
+    $sql    = "INSERT INTO phieugiamgia (TenPhieu, SoTien) VALUES ('$ten', $st)";
+    return mysqli_query($conn, $sql);
+}
+
+// 4. Cập nhật phiếu giảm giá
+function couponUpdate($id, $tenPhieu, $soTien) {
+    global $conn;
+    $id     = intval($id);
+    $ten    = mysqli_real_escape_string($conn, $tenPhieu);
+    $st     = floatval($soTien);
+    $sql    = "UPDATE phieugiamgia
+               SET TenPhieu = '$ten', SoTien = $st
+               WHERE id = $id";
+    return mysqli_query($conn, $sql);
+}
+
+// 5. Xóa phiếu giảm giá
+function couponDelete($id) {
+    global $conn;
+    $id  = intval($id);
+    $sql = "DELETE FROM phieugiamgia WHERE id = $id";
+    return mysqli_query($conn, $sql);
+}
+
 // -------------------------------------------------------------------------------
 // ------------------------------------------ admin  ----------------------
 // chi tiết hóa đơn
@@ -465,6 +545,10 @@ function bill_detail($id){
     }
   mysqli_close($conn);
 }
+
+
+
+
 
 // -------------------------------------------------------------------------------
 ?>
