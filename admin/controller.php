@@ -11,8 +11,9 @@
                         }else{
                             include('danhmuc/danhmuc.php');
                         }
+
                         break;
- case 'sanpham':
+                     case 'sanpham':
                          if($check['Quyen']>2){
                             echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
                         }else{
@@ -36,7 +37,7 @@
                         }
 
                         break;
-case 'giaohang':
+                    case 'giaohang':
                         if($check['Quyen']>2 && $check['Quyen']<5){
                             echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
                         }else{
@@ -68,30 +69,39 @@ case 'giaohang':
                         }
 
                         break;
-                        case 'khuyenmai':
-                                                if($check['Quyen']>2){
-                                                    echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
-                                                }else{
-                                                    include('khuyenmai/main.php');
+                    case 'khuyenmai':
+                        if($check['Quyen']>2){
+                            echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
+                        }else{
+                            include('khuyenmai/main.php');
+                        }
+
+                        break;
+                    case 'khachhang':
+                        if($check['Quyen']>2){
+                            echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
+                        }else{
+                            include('khachhang/main.php');
+                        }
+
+                        break;
+                    case 'phieugiamgia':
+                        if($check['Quyen']>2){
+                             echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
+                        }else{
+                            include('phieugiamgia/main.php');
                                                 }
 
                                                 break;
-                                            case 'kh':
-                                                if($check['Quyen']>2){
-                                                    echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP</center>');
-                                                }else{
-                                                    include('khachhang/thongtin.php');
-                                                }
+                    case 'thongtincanhan':
+                         include('nhanvien/thongtin.php');
+                         break;
+                    default:
+                        break;
+                }
+      }
+      else {
+          include_once('content.php');
+      }
 
-                                                break;
-                                            case 'thongtincanhan':
-                                                 include('nhanvien/thongtin.php');
-                                                 break;
-                                            default:
-                                                break;
-                                        }
-                              }
-                              else {
-                                  include_once('content.php');
-                              }
     ?>
