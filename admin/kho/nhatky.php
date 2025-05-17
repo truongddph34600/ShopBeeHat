@@ -5,7 +5,7 @@
     }
     else{ $trang=1;}
     $from =($trang-1)*30;
-	$sql="select * from phieunhap Order by NgayNhap DESC limit $from,30";
+	$sql="select * from phieuxuat Order by NgayXuat DESC limit $from,20";
 	$rs=mysqli_query($conn,$sql);
 	
 ?>
@@ -15,7 +15,7 @@
             <span class="page-title-icon bg-gradient-primary text-white mr-2">
 
             </span> ADMIN &#160;<i class="fas fa-chevron-right" style="font-size: 18px"></i>&#160; Kho Hàng &#160;<i
-                class="fas fa-chevron-right" style="font-size: 18px"></i>&#160; Nhật ký nhập kho
+                class="fas fa-chevron-right" style="font-size: 18px"></i>&#160; Nhật ký xuất kho
         </h4>
     </div>
     <hr><br>
@@ -43,7 +43,7 @@
 					
 				 	while ($row=mysqli_fetch_array($rs)) { ?>
                         <tr>
-                            <td><?php echo $row['MaPN']; ?></td>
+                            <td><?php echo $row['MaPX']; ?></td>
                             <td><?php echo $row['MaNV']; ?></td>
                             <td><?php echo $row['MaSP']; ?></td>
                             <td><?php echo $row['Size']; ?></td>
@@ -51,7 +51,7 @@
                             <td><?php echo $row['SoLuong']; ?></td>
                             <td><?php echo number_format($row['DonGia']).' đ'; ?></td>
                             <td><?php echo number_format($row['TongTien']).' đ'; ?></td>
-                            <td><?php echo $row['NgayNhap']; ?></td>
+                            <td><?php echo $row['NgayXuat']; ?></td>
                             <td><?php echo $row['Note']; ?></td>
 
                         </tr>
@@ -64,7 +64,7 @@
     <div class="row m-auto">
         <?php 
 					
-					$ds_spn1b="select * from phieunhap Order by NgayNhap DESC";
+					$ds_spn1b="select * from phieuxuat Order by NgayXuat DESC";
 					 		
 		            $query_dssp2=mysqli_query($conn,$ds_spn1b);
 		            $sosp=mysqli_num_rows($query_dssp2);
@@ -74,7 +74,7 @@
             <?php for($x=1;$x<=$sotrang;$x++){ ?>
             <li class="page-item">
                 <a class="page-link "
-                    href="index.php?action=kho&view=nhatky&trang=<?php echo $x ?>"><?php echo $x ;?></a>
+                    href="index.php?action=kho&view=nhatkyx&trang=<?php echo $x ?>"><?php echo $x ;?></a>
             </li>
 
             <?php     
