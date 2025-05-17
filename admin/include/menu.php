@@ -352,7 +352,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="?action=khachhang">
                             <i class="mdi mdi-account menu-icon"></i>
-
                             <span>Khách hàng</span></a>
                     </li>
 <hr class="sidebar-divider d-none d-md-block">
