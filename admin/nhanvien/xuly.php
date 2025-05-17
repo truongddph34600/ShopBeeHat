@@ -1,7 +1,9 @@
 
 <?php
 include_once('../../model/database.php');
-//----------------------------------------
+
+
+	//----------------------------------------
 	//Cập nhập
 	if(isset($_POST['them'])){
 		$ten=$_POST['tennv'];
@@ -18,9 +20,7 @@ include_once('../../model/database.php');
 			header('location:../index.php?action=nhanvien&thongbao=loi');
 		}
 	}
-
-	// sua
-	if(isset($_POST['sua'])){
+if(isset($_POST['sua'])){
 		$manv=$_POST['manv'];
 		$ten=$_POST['tennv'];
 		$email=$_POST['email'];

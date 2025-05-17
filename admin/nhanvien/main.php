@@ -13,13 +13,12 @@
 					include_once('nhanvien/xoa.php?view='.$view);
 				break;		
 			default:
-					
 				break;
 		}
 	}
 	else{
 		include_once('nhanvien/danhsach.php');
 	}
-
+	
 
 ?>

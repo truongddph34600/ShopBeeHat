@@ -120,14 +120,14 @@
     </style>
 </head>
 <body>
-	
-<?php 
-    $manv=$_GET['manv'];
-    $sql_sua="SELECT * FROM `nhanvien` WHERE MaNV='$manv'";
-    $rs_sua=mysqli_query($conn,$sql_sua);
-    $kq_sua=mysqli_fetch_array($rs_sua);
-    $sql1="select *from quyen";
-	$rs1=mysqli_query($conn,$sql1); 
+
+<?php
+    $manv = $_GET['manv'];
+    $sql_sua = "SELECT * FROM `nhanvien` WHERE MaNV='$manv'";
+    $rs_sua = mysqli_query($conn, $sql_sua);
+    $kq_sua = mysqli_fetch_array($rs_sua);
+    $sql1 = "select * from quyen";
+    $rs1 = mysqli_query($conn, $sql1);
 ?>
 
 <div class="container">
