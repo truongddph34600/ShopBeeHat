@@ -21,14 +21,17 @@ if (isset($_SESSION['laclac_khachang'])==false) {
             --border-color: #e1e1e1;
             --success-color: #28a745;
             --hover-color: #2a4db7;
+            --danger-color: #e53935;
+            --momo-color: #ae2070;
+            --gray-bg: #f8f9fa;
         }
 
         body {
-                        font-family: 'Roboto', sans-serif;
-                        background-color: #f9f9f9;
-                        color: #444;
-                        line-height: 1.7;
-                    }
+            font-family: 'Roboto', sans-serif;
+            background-color: #f9f9f9;
+            color: #444;
+            line-height: 1.7;
+        }
 
         .container {
             max-width: 1200px;
@@ -318,6 +321,7 @@ if (isset($_SESSION['laclac_khachang'])==false) {
             transition: all 0.3s ease;
             cursor: pointer;
             margin-top: 15px;
+            width: 100%;
         }
 
         .btn-primary {
@@ -333,8 +337,91 @@ if (isset($_SESSION['laclac_khachang'])==false) {
             transform: translateY(-2px);
         }
 
+        .btn-danger {
+            color: #fff;
+            background-color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c62828;
+            border-color: #c62828;
+            box-shadow: 0 4px 10px rgba(229, 57, 53, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-momo {
+            color: #fff;
+            background-color: var(--momo-color);
+            border-color: var(--momo-color);
+        }
+
+        .btn-momo:hover {
+            background-color: #8e1a5c;
+            border-color: #8e1a5c;
+            box-shadow: 0 4px 10px rgba(174, 32, 112, 0.25);
+            transform: translateY(-2px);
+        }
+
         .row-pb-lg {
             padding-bottom: 50px;
+        }
+
+        /* Voucher Input */
+        .voucher-container {
+            margin-bottom: 15px;
+            padding: 15px;
+            background-color: var(--gray-bg);
+            border-radius: 6px;
+            border: 1px dashed var(--border-color);
+        }
+
+        .voucher-input-group {
+            display: flex;
+            margin-bottom: 10px;
+        }
+
+        .voucher-input {
+            flex: 1;
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-right: -1px;
+        }
+
+        .voucher-button {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+            padding: 12px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            border: 1px solid var(--primary-color);
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .voucher-button:hover {
+            background-color: var(--hover-color);
+            border-color: var(--hover-color);
+        }
+
+        .voucher-info {
+            font-size: 13px;
+            color: var(--light-text);
+            margin-top: 5px;
+        }
+
+        .payment-methods {
+            margin-top: 20px;
+        }
+
+        .payment-method {
+            margin-bottom: 15px;
+        }
+
+        .payment-icon {
+            margin-right: 10px;
+            font-size: 18px;
         }
 
         /* Responsive */
@@ -454,6 +541,9 @@ if (isset($_SESSION['laclac_khachang'])==false) {
                         <div class="col-md-12">
                             <div class="cart-detail">
                                 <h2><i class="fas fa-shopping-cart"></i> Giỏ hàng</h2>
+
+
+
                                 <ul>
                                     <li>
                                         <span><i class="fas fa-box"></i> <?php echo $_POST['sl'].' sản phẩm'; ?></span>
@@ -461,11 +551,11 @@ if (isset($_SESSION['laclac_khachang'])==false) {
                                     </li>
                                     <li>
                                         <span><i class="fas fa-tag"></i> Mã giảm giá</span>
-                                        <span><?php echo number_format($_POST['tiensale']).' đ'; ?></span>
+                                        <span id="discount-amount"><?php echo number_format($_POST['tiensale']).' đ'; ?></span>
                                     </li>
                                     <li>
                                         <span class="orderTotal"><i class="fas fa-money-bill-wave"></i> Tổng cộng</span>
-                                        <span class="orderTotal"><?php echo number_format($_POST['tongtien']).' đ'; ?></span>
+                                        <span class="orderTotal" id="total-amount"><?php echo number_format($_POST['tongtien']).' đ'; ?></span>
                                     </li>
                                 </ul>
                             </div>
@@ -476,31 +566,61 @@ if (isset($_SESSION['laclac_khachang'])==false) {
                         <div class="col-md-12">
                             <div class="cart-detail">
                                 <h2><i class="fas fa-credit-card"></i> Phương thức thanh toán</h2>
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="radio">
-                                            <label><input type="radio" name="optradio" checked> <i class="fas fa-truck"></i> Thanh toán khi nhận hàng</label>
-                                        </div>
+
+                                <div class="payment-methods">
+                                    <!-- Thanh toán khi nhận hàng -->
+                                    <div class="payment-method">
+                                        <button class="btn btn-primary" type="submit" name="order" form="form_order">
+                                            <i class="fas fa-truck payment-icon"></i> Thanh Toán Khi Nhận Hàng
+                                        </button>
                                     </div>
-                                </div>
-                                <div class="form-group">
-                                    <div class="col-md-12">
-                                        <div class="radio">
-                                            <label><input type="radio" name="optradio" disabled> <i class="fas fa-university"></i> Thanh toán online (coming soon)</label>
-                                        </div>
+
+                                    <!-- Thanh toán MoMo QR -->
+                                    <div class="payment-method">
+                                        <form method="POST" target="_blank" enctype="application/x-www-form-urlencoded" action="view/xulythanhtoanmomo.php">
+                                            <input type="hidden" value="<?php echo $_POST['tongtien'] ?>" name="tongtien">
+                                            <button type="submit" name="momo" class="btn btn-momo">
+                                                <i class="fas fa-qrcode payment-icon"></i> Thanh Toán MoMo QR Code
+                                            </button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Thanh toán MoMo ATM -->
+                                    <div class="payment-method">
+                                        <form method="POST" target="_blank" enctype="application/x-www-form-urlencoded" action="view/xulythanhtoanmomo_atm.php">
+                                            <input type="hidden" value="<?php echo $_POST['tongtien'] ?>" name="tongtien">
+                                            <button type="submit" name="momo" class="btn btn-momo">
+                                                <i class="fas fa-university payment-icon"></i> Thanh Toán MoMo ATM
+                                            </button>
+                                        </form>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-12 text-center">
-                            <p><button class="btn btn-primary" type="submit" name="order" form="form_order"><i class="fas fa-check-circle"></i> Thanh Toán</button></p>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <script>
+        // Script xử lý mã giảm giá (mẫu - cần tích hợp với backend)
+        document.getElementById('apply-voucher').addEventListener('click', function() {
+            const voucherCode = document.getElementById('voucher-code').value;
+            if (voucherCode.trim() === '') {
+                alert('Vui lòng nhập mã giảm giá!');
+                return;
+            }
+
+            // Đây là phần mẫu, bạn cần xử lý AJAX hoặc form submit để kiểm tra mã giảm giá
+            alert('Đang kiểm tra mã giảm giá: ' + voucherCode);
+
+            // Giả lập xử lý mã giảm giá thành công
+            // document.getElementById('discount-amount').textContent = '50,000 đ';
+            // Tính toán lại tổng tiền sau khi áp dụng mã giảm giá
+            // const newTotal = ...; // Logic tính tổng tiền mới
+            // document.getElementById('total-amount').textContent = newTotal + ' đ';
+        });
+    </script>
 </body>
 </html>
