@@ -230,8 +230,12 @@
       </div>
 <?php
 if (isset($_GET['partnerCode'])) {
-    // Kết nối database - thay thế thông tin kết nối của bạn tại đây
-    require_once 'model/database.php'; // Đảm bảo file database.php đã được tạo với thông tin kết nối database
+    // Start session nếu chưa start
+    if (session_status() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    require_once 'model/database.php';
 
     // Lấy thông tin từ URL callback của MoMo
     $partnerCode = $_GET['partnerCode'];
@@ -243,36 +247,99 @@ if (isset($_GET['partnerCode'])) {
     $payType = $_GET['payType'];
     $resultCode = isset($_GET['resultCode']) ? $_GET['resultCode'] : '';
     $message = isset($_GET['message']) ? $_GET['message'] : '';
-    $payTime = date('Y-m-d H:i:s'); // Thời gian hiện tại
+    $payTime = date('Y-m-d H:i:s');
 
-    // Kiểm tra xem thanh toán có thành công hay không (resultCode = 0 là thành công)
     $status = ($resultCode == '0') ? 'Thành công' : 'Thất bại';
 
-    // Thêm dữ liệu vào bảng momo
     $insert_momo = "
             INSERT INTO momo (partner_code, order_id, amount, order_info, order_type, trans_id, pay_type, result_code, message, pay_time, status)
             VALUES ('$partnerCode', '$orderId', '$amount', '$orderInfo', '$orderType', '$transId', '$payType', '$resultCode', '$message', '$payTime', '$status')
         ";
 
-    // Thực hiện truy vấn
     if (mysqli_query($conn, $insert_momo)) {
-            // Lấy MaMomo vừa được tạo
-            $maMomo = mysqli_insert_id($conn);
+        if ($resultCode == '0') {
+            // Lấy MaMomo từ bảng momo dựa vào orderId
+            $sql_momo = "SELECT MaMomo FROM momo WHERE order_id = ?";
+            $stmt_momo = mysqli_prepare($conn, $sql_momo);
+            mysqli_stmt_bind_param($stmt_momo, "s", $orderId);
+            mysqli_stmt_execute($stmt_momo);
+            $result_momo = mysqli_stmt_get_result($stmt_momo);
 
-            if ($resultCode == '0') {
-                // Cập nhật hoadon: Thêm MaMomo và trạng thái
-                $update_order = "
-                    UPDATE hoadon
-                    SET TinhTrang = 'Đã thanh toán',
-                        PhuongThucTT = 'MoMo',
-                        MaMomo = $maMomo
-                    WHERE MaHD = '$orderId'
-                ";
-                mysqli_query($conn, $update_order);
+            if($row_momo = mysqli_fetch_assoc($result_momo)) {
+                $mamo = $row_momo['MaMomo'];
+
+                // Lấy MaKH từ mảng laclac_khachang
+                $maKH = isset($_SESSION['laclac_khachang']['MaKH']) ? $_SESSION['laclac_khachang']['MaKH'] : null;
+
+                if($maKH !== null) {
+                    // Insert vào bảng hoadonmomo
+                    $sql_hoadon = "INSERT INTO hoadonmomo (MaKH, MaMomo, NgayDat, TongTien, TinhTrang)
+                               VALUES (?, ?, NOW(), ?, 'Đã thanh toán')";
+
+                    $stmt_hoadon = mysqli_prepare($conn, $sql_hoadon);
+                    mysqli_stmt_bind_param($stmt_hoadon, "iid",
+                        $maKH,
+                        $mamo,
+                        $amount
+                    );
+
+                    if(mysqli_stmt_execute($stmt_hoadon)) {
+                        $maHD = mysqli_insert_id($conn); // Lấy MaHD vừa được tạo
+                         // Insert vào bảng nguoinhanmomo
+                            if(isset($_SESSION['laclac_khachang'])) {
+                                $tenNN = $_SESSION['laclac_khachang']['TenKH'];
+                                $diaChiNN = $_SESSION['laclac_khachang']['DiaChi'];
+                                $sdtNN = $_SESSION['laclac_khachang']['SDT'];
+
+                                $sql_nguoinhan = "INSERT INTO nguoinhanmomo (MaHD, TenNN, DiaChiNN, SDTNN)
+                                                 VALUES (?, ?, ?, ?)";
+                                $stmt_nguoinhan = mysqli_prepare($conn, $sql_nguoinhan);
+                                mysqli_stmt_bind_param($stmt_nguoinhan, "issi",
+                                    $maHD,
+                                    $tenNN,
+                                    $diaChiNN,
+                                    $sdtNN
+                                );
+                                mysqli_stmt_execute($stmt_nguoinhan);
+                            }
+                        // Lấy thông tin giỏ hàng từ session
+                        if(isset($_SESSION['cart_product'])) {
+                            foreach($_SESSION['cart_product'] as $item) {
+                                $maSP = $item['MaSP'];
+                                $soLuong = $item['SoLuong'];
+                                $donGia = str_replace(',', '', $item['DonGia']);
+                                $thanhTien = $soLuong * $donGia;
+                                $size = $item['Size'];
+                                $maMau = $item['Mau'];
+
+                                // Insert vào bảng chitiethoadonmomo
+                                $sql_chitiet = "INSERT INTO chitiethoadonmomo (MaHD, MaSP, SoLuong, DonGia, ThanhTien, Size, MaMau)
+                                           VALUES (?, ?, ?, ?, ?, ?, ?)";
+                                $stmt_chitiet = mysqli_prepare($conn, $sql_chitiet);
+                                mysqli_stmt_bind_param($stmt_chitiet, "iiiddss",
+                                    $maHD,
+                                    $maSP,
+                                    $soLuong,
+                                    $donGia,
+                                    $thanhTien,
+                                    $size,
+                                    $maMau
+                                );
+                                mysqli_stmt_execute($stmt_chitiet);
+                            }
+
+                            // Xóa giỏ hàng sau khi đã lưu thành công
+                            unset($_SESSION['cart_product']);
+                        }
+                    } else {
+                        echo '<pre style="display:none">SQL Error: ' . mysqli_stmt_error($stmt_hoadon) . '</pre>';
+                    }
+                } else {
+                    echo '<pre style="display:none">MaKH not found in laclac_khachang</pre>';
+                }
             }
-        } else {
-            error_log("Lỗi lưu thông tin MoMo: " . mysqli_error($conn));
         }
+    }
 }
 ?>
 

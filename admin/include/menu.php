@@ -264,6 +264,14 @@
                             &#160;</sup></span></a>
             </li>
 <hr class="sidebar-divider d-none d-md-block">
+            <!-- Momo -->
+            <li class="nav-item">
+                <a class="nav-link" href="?action=momo">
+                    <i class="mdi mdi-wallet menu-icon"></i>
+                    <span>Momo</span>
+                </a>
+            </li>
+<hr class="sidebar-divider d-none d-md-block">
             <!-- Shipping -->
             <?php
         $sql="SELECT * FROM hoadon WHERE NgayGiao is not null and TinhTrang='Đã duyệt' ORDER BY NgayGiao ASc";
@@ -288,9 +296,7 @@
                 <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <a class="collapse-item" href="?action=kho&view=xemdh"> Xem đơn hàng</a>
-                        <a class="collapse-item" href="?action=kho&view=nhapkho"> Xuất / Nhập kho</a>
-                        <a class="collapse-item" href="?action=kho&view=nhatky"> Nhật ký Nhập Kho</a>
-                        <a class="collapse-item" href="?action=kho&view=nhatkyx">Nhật ký Xuất Kho</a>
+
                     </div>
                 </div>
             </li>
@@ -347,6 +353,8 @@
                     <i class="mdi mdi-cash-multiple menu-icon"></i>
                     <span>Doanh Thu</span></a>
             </li>
+
+
 <hr class="sidebar-divider d-none d-md-block">
         <!-- Khách hàng -->
                     <li class="nav-item">
@@ -359,7 +367,7 @@
             <li class="nav-item">
                 <a class="nav-link" href="?action=nhanvien">
                     <i class="mdi mdi-account-group menu-icon"></i>
-                    <span>Quản lý nhân viên</span></a>
+                    <span>Nhân viên</span></a>
             </li>
             <hr class="sidebar-divider d-none d-md-block">
 

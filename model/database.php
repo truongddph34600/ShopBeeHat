@@ -665,7 +665,50 @@ function bill_detail($id){
 
 // -------------------------------------------------------------------------------
 
+// Thêm các function sau vào cuối file database.php
 
+function createMomoOrder($order_info) {
+    global $conn;
+    $sql = "INSERT INTO hoadonmomo (MaKH, NgayDat, TongTien, TinhTrang)
+            VALUES (?, NOW(), ?, 'Chờ thanh toán')";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "id",
+        $order_info['MaKH'],
+        $order_info['TongTien']
+    );
+
+    if(mysqli_stmt_execute($stmt)) {
+        return mysqli_insert_id($conn);
+    }
+    return false;
+}
+
+function updateMomoOrder($mahd, $mamomo) {
+    global $conn;
+    $sql = "UPDATE hoadonmomo SET
+            MaMomo = ?,
+            TinhTrang = 'Đã thanh toán'
+            WHERE MaHD = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "ii", $mamomo, $mahd);
+    return mysqli_stmt_execute($stmt);
+}
+
+function getMomoOrder($mahd) {
+    global $conn;
+    $sql = "SELECT h.*, k.TenKH, k.Email, k.SDT
+            FROM hoadonmomo h
+            INNER JOIN khachhang k ON h.MaKH = k.MaKH
+            WHERE h.MaHD = ?";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "i", $mahd);
+    mysqli_stmt_execute($stmt);
+    $result = mysqli_stmt_get_result($stmt);
+    return mysqli_fetch_assoc($result);
+}
 
 ?>
 

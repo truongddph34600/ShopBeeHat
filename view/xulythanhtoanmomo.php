@@ -109,4 +109,28 @@ if (isset($jsonResult['payUrl'])) {
     echo "<p>Vui lòng kiểm tra lại thông tin thanh toán.</p>";
     echo "<p><a href='javascript:history.back()'>Quay lại</a></p>";
 }
+if($insert_result) {  // Giả sử $insert_result là kết quả insert vào bảng momo
+    // Tạo đơn hàng mới trong bảng hoadonmomo
+    $order_data = array(
+        'MaKH' => $_SESSION['MaKH'], // Giả sử đã có session chứa MaKH
+        'MaMomo' => mysqli_insert_id($conn), // Lấy MaMomo vừa insert
+        'NgayDat' => date('Y-m-d H:i:s'),
+        'TinhTrang' => 'Chờ thanh toán',
+        'TongTien' => $amount  // Số tiền thanh toán từ form
+    );
+
+    $sql = "INSERT INTO hoadonmomo (MaKH, MaMomo, NgayDat, TinhTrang, TongTien)
+            VALUES (?, ?, ?, ?, ?)";
+
+    $stmt = mysqli_prepare($conn, $sql);
+    mysqli_stmt_bind_param($stmt, "iissd",
+        $order_data['MaKH'],
+        $order_data['MaMomo'],
+        $order_data['NgayDat'],
+        $order_data['TinhTrang'],
+        $order_data['TongTien']
+    );
+
+    mysqli_stmt_execute($stmt);
+}
 ?>

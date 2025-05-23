@@ -47,7 +47,7 @@ if(isset($_GET['view'])){
             case 'products-category':
                 include('view/products-category.php');
                 break;
-                case 'products-search':
+            case 'products-search':
                     include('view/products-category.php');
                     break;
             case 'product-detail':
@@ -82,11 +82,9 @@ if(isset($_GET['view'])){
                         header('Location:view/login.php');
                         break;
                 }
-
             case 'timkiem':
                     if(isset($_POST['btsearch'])){include('view/main/timkiem.php');}
                     break;
-
             default:
                     include('view/home.php');
 
