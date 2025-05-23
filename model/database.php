@@ -107,17 +107,13 @@ function product_rand(){
     }
   mysqli_close($conn);
 }
-// tìm kiếm sản phẩm
+// tìm kiếm sản phẩm
 function product_search($key){
   global $conn;
   $sql="SELECT * FROM `sanpham` WHERE `TenSP`  LIKE N'%".$key."%' ";
   $resulf=mysqli_query($conn,$sql);
-  $count=mysqli_num_rows($resulf);
-  if($count==0){
-      return false;
-    }else{
-      return  $resulf;
-    }
+  // Always return the result object, even if no rows found
+  return $resulf;
   mysqli_close($conn);
 }
 function product_all_sorted($order = 'ASC') {
@@ -354,7 +350,128 @@ function product_category($id){
 // -------------------------------------------------------------------------------
 // ------------------------------------------ card MODEL----------------------
 // xử lý đặt hàng
+/**
+ * Hàm xử lý đặt hàng với thanh toán MoMo
+ * Lưu thông tin vào bảng hoadon và cập nhật MaMomo khi thanh toán thành công
+ */
+function order_product_momo($nn, $dcnn, $sdtnn, $makh, $tt) {
+    global $conn;
 
+    // Kiểm tra và xử lý các giá trị đầu vào
+    $nn = mysqli_real_escape_string($conn, $nn); // Xử lý tên người nhận
+    $dcnn = mysqli_real_escape_string($conn, $dcnn); // Xử lý địa chỉ người nhận
+    $sdtnn = mysqli_real_escape_string($conn, $sdtnn); // Xử lý số điện thoại người nhận
+    $makh = (int)$makh; // Chuyển mã khách hàng thành số nguyên
+    $tt = (float)str_replace(',', '', $tt); // Đảm bảo tổng tiền là số thực, bỏ dấu phẩy nếu có
+
+    // Thực hiện câu lệnh SQL insert vào bảng hoadon
+    $sql = "INSERT INTO `hoadon`(`MaKH`, `TinhTrang`, `TongTien`) VALUES ($makh, N'Chờ thanh toán', $tt)";
+    $resulf = mysqli_query($conn, $sql);
+
+    if ($resulf) {
+        // Lấy mã hóa đơn mới nhất
+        $sql2 = "SELECT MaHD FROM hoadon WHERE MaKH = $makh AND TongTien = $tt ORDER BY MaHD DESC LIMIT 1";
+        $rs2 = mysqli_query($conn, $sql2);
+        $kq2 = mysqli_fetch_array($rs2);
+        $mahd = $kq2['MaHD'];
+
+        // Duyệt qua các sản phẩm trong giỏ hàng và thêm vào bảng chi tiết hóa đơn
+        foreach ($_SESSION['cart_product'] as $item) {
+            $DonGia = str_replace(',', '', $item['DonGia']); // Xử lý giá trị đơn giá, bỏ dấu phẩy nếu có
+            $ttt = ($item['SoLuong'] * $DonGia); // Tính thành tiền
+            $masp = (int)$item['MaSP']; // Mã sản phẩm
+            $sl = (int)$item['SoLuong']; // Số lượng
+            $dg = (float)$DonGia; // Đảm bảo giá trị đơn giá là số thực
+            $mamau = mysqli_real_escape_string($conn, $item['Mau']); // Mã màu
+            $size = mysqli_real_escape_string($conn, $item['Size']); // Kích cỡ
+
+            // Thêm chi tiết hóa đơn
+            $sql3 = "INSERT INTO `chitiethoadon`(`MaHD`, `MaSP`, `SoLuong`, `DonGia`, `ThanhTien`, `Size`, `MaMau`)
+                    VALUES ($mahd, $masp, $sl, $dg, $ttt, '$size', '$mamau')";
+            $rs3 = mysqli_query($conn, $sql3);
+        }
+
+        // Thêm thông tin người nhận vào bảng nguoinhan
+        $sql4 = "INSERT INTO `nguoinhan`(`MaHD`, `TenNN`, `DiaChiNN`, `SDTNN`)
+                VALUES ($mahd, '$nn', '$dcnn', '$sdtnn')";
+        $rs4 = mysqli_query($conn, $sql4);
+
+        // Lưu ý: Không xóa giỏ hàng ngay, vì cần đợi thanh toán MoMo thành công
+
+        // Trả về mã hóa đơn để sử dụng trong quá trình thanh toán MoMo
+        return $mahd;
+    }
+
+    return false;
+}
+
+/**
+ * Hàm cập nhật số lượng sản phẩm sau khi thanh toán MoMo thành công
+ */
+function update_product_quantity_after_momo($mahd) {
+    global $conn;
+
+    // Lấy thông tin chi tiết hóa đơn
+    $sql = "SELECT * FROM chitiethoadon WHERE MaHD = $mahd";
+    $result = mysqli_query($conn, $sql);
+
+    while ($row = mysqli_fetch_array($result)) {
+        $masp = $row['MaSP'];
+        $sl = $row['SoLuong'];
+        $size = $row['Size'];
+        $mamau = $row['MaMau'];
+
+        // Cập nhật số lượng sản phẩm trong kho
+        $sql_sl = "UPDATE `chitietsanpham` SET `SoLuong` = `SoLuong` - '$sl'
+                  WHERE `MaSP` = '$masp' AND `MaSize` = '$size' AND `MaMau` = '$mamau'";
+        mysqli_query($conn, $sql_sl);
+    }
+
+    return true;
+}
+
+/**
+ * Hàm xử lý khi nhận callback từ MoMo
+ */
+function process_momo_callback($momo_data) {
+    global $conn;
+
+    $orderId = $momo_data['orderId'];
+    $resultCode = $momo_data['resultCode'];
+
+    if ($resultCode == '0') {
+        // Lấy MaMomo từ bảng momo
+        $sql = "SELECT MaMomo FROM momo WHERE order_id = '$orderId' ORDER BY MaMomo DESC LIMIT 1";
+        $result = mysqli_query($conn, $sql);
+
+        if ($row = mysqli_fetch_array($result)) {
+            $maMomo = $row['MaMomo'];
+
+            // Cập nhật hoadon với MaMomo và trạng thái
+            $update_hoadon = "
+                UPDATE hoadon
+                SET TinhTrang = 'Đã thanh toán',
+                    MaMomo = '$maMomo'
+                WHERE MaHD = '$orderId'
+            ";
+            mysqli_query($conn, $update_hoadon);
+
+            // Cập nhật số lượng sản phẩm
+            update_product_quantity_after_momo($maHD);
+
+            // Xóa giỏ hàng
+            unset($_SESSION['cart_product']);
+
+            return true;
+        }
+    } else {
+        // Nếu thanh toán thất bại, có thể cập nhật trạng thái hóa đơn hoặc xử lý khác
+        $update_hoadon = "UPDATE hoadon SET TinhTrang = 'Thanh toán thất bại' WHERE MaHD = '$maHD'";
+        mysqli_query($conn, $update_hoadon);
+    }
+
+    return false;
+}
 function order_product($nn, $dcnn, $sdtnn, $makh, $tt) {
   global $conn;
 
@@ -546,11 +663,10 @@ function bill_detail($id){
   mysqli_close($conn);
 }
 
-
-
-
-
 // -------------------------------------------------------------------------------
+
+
+
 ?>
 
 

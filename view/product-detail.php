@@ -531,12 +531,18 @@
                     <div class="block-26 mb-2">
                         <h4>Size</h4>
                         <div class="size-options">
-                            <?php while ($row=(mysqli_fetch_array($product_detail_size))) {?>
+                            <?php
+                            if($product_detail_size !== false) {
+                                while ($row = mysqli_fetch_array($product_detail_size)) {
+                            ?>
                                 <div class="box-size">
                                     <input type="radio" class="custom-control-input" id="<?php echo $row['MaSize'];?>" name="size" value="<?php echo $row['MaSize'];?>" required>
                                     <label class="custom-control-label" for="<?php echo $row['MaSize'];?>"><h6><?php echo $row['MaSize'];?></h6></label>
                                 </div>
-                            <?php }?>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -544,12 +550,18 @@
                     <div class="block-26 mb-2">
                         <h4>Màu</h4>
                         <div class="color-options">
-                            <?php while ($row=(mysqli_fetch_array($product_detail_color))) {?>
+                            <?php
+                            if($product_detail_color !== false) {
+                                while ($row = mysqli_fetch_array($product_detail_color)) {
+                            ?>
                             <div class="box-mau">
                                 <input type="radio" class="custom-control-input" id="<?php echo $row['MaMau'];?>" name="mau" value="<?php echo $row['MaMau'];?>" required>
                                 <label class="custom-control-label" for="<?php echo $row['MaMau'];?>"><h6><?php echo $row['MaMau'];?></h6></label>
                             </div>
-                            <?php }?>
+                            <?php
+                                }
+                            }
+                            ?>
                         </div>
                     </div>
                 </div>
@@ -586,11 +598,13 @@
                                 <div class="tab-pane border fade show active" id="pills-description" role="tabpanel" aria-labelledby="pills-description-tab">
                                     <p><?php echo $product['MoTa'] ?></p>
                                     <div class="care-instructions">
-                                        <h5>Hướng dẫn bảo quản:</h5>
+                                        <h5>🔍 Hướng dẫn chọn size mũ phù hợp:</h5>
+                                        <h6> Để chọn size mũ vừa vặn, bạn chỉ cần dùng thước dây mềm đo vòng quanh đầu, đi qua giữa trán và phần sau gáy, nơi đội mũ tự nhiên nhất. So sánh số đo với bảng bên dưới: </h6>
                                         <ul>
-                                            <li>Không dùng hóa chất tẩy.</li>
-                                            <li>Ủi ở nhiệt độ thích hợp, hạn chế dùng máy sấy.</li>
-                                            <li>Giặt ở chế độ bình thường, với đồ có màu tương tự.</li>
+                                            <li>Size S: 54 – 55 cm</li>
+                                            <li>Size M: 56 – 57 cm </li>
+                                            <li>Size L: 58 – 59 cm</li>
+                                            <li>Size XL: 60 – 61 cm</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -605,7 +619,12 @@
                                     <div class="row">
                                         <div class="col-md-12">
                                             <h3 class="head"><?php if($product_review==false){ echo "Chưa có đánh giá nào";}else{ echo mysqli_num_rows($product_review) .' Đánh giá'  ;?></h3>
-                                            <?php while($row=mysqli_fetch_array($product_review))  { $rowkh=selectKH($row['MaKH']) ?>
+                                            <?php
+                                            // Chỉ thực hiện vòng lặp khi $product_review không phải là false
+                                            if($product_review !== false) {
+                                                while($row = mysqli_fetch_array($product_review)) {
+                                                    $rowkh = selectKH($row['MaKH']);
+                                            ?>
                                             <div class="review">
                                                 <div class="user-img" style="background-image: url('webroot/image/logo/user.png')"></div>
                                                 <div class="desc">
@@ -625,7 +644,11 @@
                                                     <p><?php echo $row['NoiDung'] ?></p>
                                                 </div>
                                             </div>
-                                            <?php } }?>
+                                            <?php
+                                                }
+                                            }
+                                            }
+                                            ?>
                                         </div>
                                     </div>
                                 </div>
@@ -649,15 +672,21 @@
                     <div class="row wrapper-dt">
                         <div class="col-12">
                             <div class="row pad-dt">
-                                <div class="row pad-dt"><?php while ($row = mysqli_fetch_array($product)) { ?>
+                                <div class="row pad-dt">
+                                <?php
+                                if($product !== false) {
+                                    while ($row = mysqli_fetch_array($product)) {
+                                ?>
                                     <div class="col-3 col-dt">
                                         <a href="?view=product-detail&id=<?php echo $row['MaSP'] ?>">
                                             <div class="item">
                                                 <div class="product-lable">
-                                                    <?php $price_sale = price_sale($row['MaSP'], $row['DonGia']);
-                                                        if ($price_sale < $row['DonGia']) {
-                                                            echo '<span>Giảm ' . number_format($row['DonGia'] - $price_sale) . 'đ </span>';
-                                                        } ?>
+                                                    <?php
+                                                    $price_sale = price_sale($row['MaSP'], $row['DonGia']);
+                                                    if ($price_sale < $row['DonGia']) {
+                                                        echo '<span>Giảm ' . number_format($row['DonGia'] - $price_sale) . 'đ </span>';
+                                                    }
+                                                    ?>
                                                 </div>
                                                 <div class="product-image">
                                                     <img src="webroot/image/sanpham/<?php echo $row['AnhNen']; ?>" alt="<?php echo $row['TenSP']; ?>">
@@ -667,14 +696,21 @@
                                                 </div>
                                                 <div class="item-price">
                                                     <p><?php echo number_format($price_sale, 0) . 'đ'; ?></p>
-                                                    <h6><?php if (number_format($row['DonGia']) !== number_format($price_sale)) {
-                                                            echo number_format($row['DonGia']) . 'đ';
-                                                        };  ?>
+                                                    <h6>
+                                                    <?php
+                                                    if (number_format($row['DonGia']) !== number_format($price_sale)) {
+                                                        echo number_format($row['DonGia']) . 'đ';
+                                                    }
+                                                    ?>
                                                     </h6>
                                                 </div>
                                             </div>
                                         </a>
-                                    </div><?php }  ?>
+                                    </div>
+                                <?php
+                                    }
+                                }
+                                ?>
                                     <div id="data_sp"></div>
                                 </div>
                             </div>

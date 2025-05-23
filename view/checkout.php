@@ -585,15 +585,6 @@ if (isset($_SESSION['laclac_khachang'])==false) {
                                         </form>
                                     </div>
 
-                                    <!-- Thanh toán MoMo ATM -->
-                                    <div class="payment-method">
-                                        <form method="POST" target="_blank" enctype="application/x-www-form-urlencoded" action="view/xulythanhtoanmomo_atm.php">
-                                            <input type="hidden" value="<?php echo $_POST['tongtien'] ?>" name="tongtien">
-                                            <button type="submit" name="momo" class="btn btn-momo">
-                                                <i class="fas fa-university payment-icon"></i> Thanh Toán MoMo ATM
-                                            </button>
-                                        </form>
-                                    </div>
                                 </div>
                             </div>
                         </div>

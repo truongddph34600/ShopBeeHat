@@ -38,14 +38,18 @@ if ($amount < 1000) {
     exit;
 }
 
+// Lấy thông tin đơn hàng nếu đã lưu trong session (nếu cần)
+session_start();
+$customer_id = isset($_SESSION['laclac_khachang']['MaKH']) ? $_SESSION['laclac_khachang']['MaKH'] : 'KH' . time();
+
 $orderId = time() . "";
-$orderInfo = "Thanh toán qua MoMo";
-$redirectUrl = "http://beehat.test/?view=order-complete";
-$ipnUrl = "http://beehat.test/?view=order-complete";
-$extraData = "";
+$orderInfo = "Thanh toán đơn hàng #" . $orderId;
+$redirectUrl = "http://beehat.test/?view=order-complete"; // URL khi thanh toán xong
+$ipnUrl = "http://beehat.test/?view=order-complete";      // URL nhận IPN từ MoMo
+$extraData = $customer_id;                                // Lưu thêm thông tin khách hàng nếu cần
 
 $requestId = time() . "";
-$requestType = "captureWallet";
+$requestType = "captureWallet"; // Loại thanh toán QR code
 
 // Tạo chuỗi rawHash theo đúng thứ tự như tài liệu MoMo yêu cầu
 $rawHash = "accessKey=" . $accessKey .
@@ -80,6 +84,15 @@ $data = array(
 
 // Debug thông tin
 echo "<h3>Số tiền gửi đến MoMo: " . number_format($amount) . " VND</h3>";
+
+// Lưu thông tin vào session để sau này có thể kiểm tra
+$_SESSION['momo_payment'] = [
+    'order_id' => $orderId,
+    'amount' => $amount,
+    'order_info' => $orderInfo,
+    'customer_id' => $customer_id,
+    'time' => date('Y-m-d H:i:s')
+];
 
 $result = execPostRequest($endpoint, json_encode($data));
 $jsonResult = json_decode($result, true);

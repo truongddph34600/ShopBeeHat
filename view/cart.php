@@ -16,45 +16,45 @@
             --border-color: #dee2e6;
             --font-family: 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
         }
-        
+
         body {
                         font-family: 'Roboto', sans-serif;
                         background-color: #f9f9f9;
                         color: #444;
                         line-height: 1.7;
                     }
-        
+
         .breadcrumbs {
             padding: 15px 0;
             background-color: #f3f4f6;
             margin-bottom: 20px;
             border-bottom: 1px solid var(--border-color);
         }
-        
+
         .breadcrumbs p.bread {
             margin: 0;
             color: var(--secondary-color);
             font-size: 0.9rem;
         }
-        
+
         .breadcrumbs a {
             color: var(--primary-color);
             text-decoration: none;
             transition: color 0.3s;
         }
-        
+
         .breadcrumbs a:hover {
             color: #0d6efd;
             text-decoration: underline;
         }
-        
+
         .process-wrap {
             display: flex;
             justify-content: space-between;
             margin-bottom: 40px;
             position: relative;
         }
-        
+
         .process-wrap::before {
             content: '';
             position: absolute;
@@ -65,16 +65,16 @@
             background: #e9ecef;
             z-index: -1;
         }
-        
+
         .process {
             position: relative;
             width: 33.33%;
         }
-        
+
         .process p {
             margin-bottom: 0;
         }
-        
+
         .process span {
             display: flex;
             align-items: center;
@@ -90,28 +90,28 @@
             transition: all 0.3s;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        
+
         .process.active span {
             background: var(--primary-color);
             color: white;
         }
-        
+
         .process h3 {
             font-size: 1rem;
             font-weight: 600;
             margin: 5px 0;
             color: var(--secondary-color);
         }
-        
+
         .process.active h3 {
             color: var(--primary-color);
             font-weight: 700;
         }
-        
+
         .colorlib-product {
             padding: 30px 0;
         }
-        
+
         .product-name {
             background: white;
             border-radius: 8px 8px 0 0;
@@ -122,7 +122,7 @@
             color: var(--dark-color);
             border-bottom: 2px solid var(--primary-color);
         }
-        
+
         .product-cart {
             background: white;
             padding: 15px 0;
@@ -131,13 +131,13 @@
             transition: all 0.2s;
             box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
-        
+
         .product-cart:hover {
             background-color: #f8f9fa;
             transform: translateY(-2px);
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
-        
+
         .product-img {
             width: 80px;
             height: 80px;
@@ -147,31 +147,31 @@
             margin-right: 15px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
         .one-forth {
             display: flex;
             align-items: center;
             padding: 0 15px;
         }
-        
+
         .one-forth h3 {
             font-size: 0.95rem;
             margin: 0;
             font-weight: 600;
             line-height: 1.4;
         }
-        
+
         .one-eight {
             text-align: center;
         }
-        
+
         .display-tc {
             display: flex;
             align-items: center;
             justify-content: center;
             height: 100%;
         }
-        
+
         .input-number {
             width: 60px;
             border-radius: 4px;
@@ -179,7 +179,7 @@
             border: 1px solid var(--border-color);
             height: 36px;
         }
-        
+
         .closed {
             width: 30px;
             height: 30px;
@@ -189,7 +189,7 @@
             border: none;
             cursor: pointer;
         }
-        
+
         .closed:after, .closed:before {
             content: "";
             position: absolute;
@@ -200,15 +200,15 @@
             background-color: #dc3545;
             transform: translate(-50%, -50%) rotate(45deg);
         }
-        
+
         .closed:before {
             transform: translate(-50%, -50%) rotate(-45deg);
         }
-        
+
         .closed:hover:after, .closed:hover:before {
             background-color: #c82333;
         }
-        
+
         .total-wrap {
             background: white;
             padding: 30px;
@@ -216,19 +216,19 @@
             box-shadow: 0 2px 15px rgba(0,0,0,0.08);
             margin-top: 30px;
         }
-        
+
         .total {
             border-top: 1px solid var(--border-color);
             padding-top: 20px;
             text-align: right;
         }
-        
+
         .sub p, .grand-total p {
             display: flex;
             justify-content: space-between;
             margin-bottom: 10px;
         }
-        
+
         .grand-total {
             border-top: 1px solid var(--border-color);
             padding-top: 15px;
@@ -236,7 +236,7 @@
             font-weight: bold;
             font-size: 1.1em;
         }
-        
+
         .btn-primary {
             background-color: var(--primary-color);
             border-color: var(--primary-color);
@@ -245,13 +245,13 @@
             font-weight: 500;
             transition: all 0.2s;
         }
-        
+
         .btn-primary:hover {
             background-color: #0b5ed7;
             border-color: #0a58ca;
             transform: translateY(-1px);
         }
-        
+
         .btn-outline-success {
             color: var(--success-color);
             border-color: var(--success-color);
@@ -261,17 +261,17 @@
             margin-top: 15px;
             transition: all 0.2s;
         }
-        
+
         .btn-outline-success:hover {
             background-color: var(--success-color);
             color: white;
             transform: translateY(-1px);
         }
-        
+
         .colorlib-heading {
             margin-bottom: 40px;
         }
-        
+
         .colorlib-heading h2 {
             font-size: 1.5rem;
             font-weight: 700;
@@ -279,7 +279,7 @@
             display: inline-block;
             padding-bottom: 10px;
         }
-        
+
         .colorlib-heading h2:after {
             content: '';
             position: absolute;
@@ -290,15 +290,15 @@
             height: 3px;
             background: var(--primary-color);
         }
-        
+
         .wrapper-dt {
             margin-top: 20px;
         }
-        
+
         .col-dt {
             padding: 10px;
         }
-        
+
         .item {
             background: white;
             border-radius: 8px;
@@ -308,30 +308,30 @@
             height: 100%;
             position: relative;
         }
-        
+
         .item:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.1);
         }
-        
+
         .item img {
             width: 100%;
             height: 180px;
             object-fit: cover;
             transition: all 0.3s;
         }
-        
+
         .item:hover img {
             transform: scale(1.05);
         }
-        
+
         .product-lable {
             position: absolute;
             top: 10px;
             left: 0;
             z-index: 2;
         }
-        
+
         .product-lable span {
             background: #ff6b6b;
             color: white;
@@ -341,11 +341,11 @@
             font-weight: 600;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
+
         .item-name {
             padding: 10px 15px 5px;
         }
-        
+
         .item-name p {
             font-weight: 600;
             margin: 0;
@@ -357,21 +357,21 @@
             -webkit-box-orient: vertical;
             min-height: 43px;
         }
-        
+
         .item-price {
             padding: 0 15px 15px;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .item-price p {
             color: #e63946;
             font-weight: 700;
             margin: 0;
             font-size: 1rem;
         }
-        
+
         .item-price h6 {
             color: #6c757d;
             text-decoration: line-through;
@@ -379,7 +379,7 @@
             font-size: 0.8rem;
             font-weight: normal;
         }
-        
+
         .custom-alert {
             position: fixed;
             bottom: 20px;
@@ -392,33 +392,33 @@
             animation: slideIn 0.5s forwards, fadeOut 0.5s 4.5s forwards;
             max-width: 350px;
         }
-        
+
         @keyframes slideIn {
             from { transform: translateX(100%); opacity: 0; }
             to { transform: translateX(0); opacity: 1; }
         }
-        
+
         @keyframes fadeOut {
             from { opacity: 1; }
             to { opacity: 0; display: none; }
         }
-        
+
         .alert-success {
             background-color: #d4edda;
             border-color: #c3e6cb;
             color: #155724;
         }
-        
+
         .alert .close {
             font-size: 1.5rem;
             opacity: 0.5;
             transition: opacity 0.3s;
         }
-        
+
         .alert .close:hover {
             opacity: 1;
         }
-        
+
         a {
             text-decoration: none;
         }
@@ -508,7 +508,7 @@
                     </div>
                     <div class="one-eight text-center">
                         <div class="display-tc">
-                            <input type="text" id="quantity" name="quantity" class="form-control input-number text-center" value="<?php echo $item_cart['SoLuong'] ; ?>" min="1" max="100">
+                            <span class="price"><?php echo $item_cart['SoLuong']  ; ?></span>
                         </div>
                     </div>
                     <div class="one-eight text-center">
@@ -556,7 +556,7 @@
                                 <div class="grand-total">
                                     <p><span><strong>Tổng cộng:</strong></span> <span id="total"><?php if(isset($_SESSION['cart_product'])){ echo number_format($subtotal);}else echo '0'; ?> </span></p>
                                 </div>
-                                
+
                             </div>
                             <div class="col-sm-12">
                                 <form action="?view=thanhtoan2" method="post">
@@ -640,15 +640,15 @@
     </div>
 </div>
 
-<?php 
-    if(isset($_GET['alert'])){ ?> 
+<?php
+    if(isset($_GET['alert'])){ ?>
     <div id="alertDiv" class="alert alert-success alert-dismissible fade custom-alert show" role="alert">
         <strong><i class="fas fa-check-circle me-2"></i><?php if($_GET['alert']!==''){ echo ' '.$_GET['alert'];} ?></strong>
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
     </div>
-    
+
     <script>
         setTimeout(function(){
             document.getElementById('alertDiv').classList.remove('show');

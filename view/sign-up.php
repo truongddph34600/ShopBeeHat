@@ -139,15 +139,6 @@ function validateForm() {
         return false;
     }
 
-    // Kiểm tra các trường bắt buộc
-    const requiredFields = document.querySelectorAll('[required]');
-    for (let field of requiredFields) {
-        if (!field.value.trim()) {
-            alert('Vui lòng điền đầy đủ tất cả các trường bắt buộc');
-            return false;
-        }
-    }
-
     // Xác nhận tạo tài khoản
     return confirm('Bạn có chắc chắn muốn tạo tài khoản này?');
 }

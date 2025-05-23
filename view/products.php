@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -266,8 +267,11 @@ if ($key !== '') {
     $product = productAll();
 }
 
-// Kiểm tra có sản phẩm không
-$has_products = mysqli_num_rows($product) > 0;
+// Kiểm tra có sản phẩm không - sửa lại để xử lý trường hợp $product là false
+$has_products = false;
+if ($product) {
+    $has_products = mysqli_num_rows($product) > 0;
+}
 ?>
 
 <div class="container">
@@ -297,9 +301,7 @@ $has_products = mysqli_num_rows($product) > 0;
                     <?php if(number_format($row['DonGia']) !== number_format($price_sale)): ?>
                       <h6><?php echo number_format($row['DonGia']); ?>đ</h6>
                     <?php endif; ?>
-                    <div class="add-to-cart">
-                                                <i class="fas fa-shopping-cart me-2"></i>Xem chi tiết
-                                            </div>
+
                   </div>
                 </div>
               </div>

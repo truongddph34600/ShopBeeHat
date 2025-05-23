@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="vi">
 <head>
@@ -227,22 +228,79 @@
           </div>
         </div>
       </div>
+<?php
+if (isset($_GET['partnerCode'])) {
+    // Kết nối database - thay thế thông tin kết nối của bạn tại đây
+    require_once 'model/database.php'; // Đảm bảo file database.php đã được tạo với thông tin kết nối database
 
-      <!-- Success Message -->
-      <div class="row">
-        <div class="col-sm-10 offset-sm-1">
-          <div class="order-complete">
+    // Lấy thông tin từ URL callback của MoMo
+    $partnerCode = $_GET['partnerCode'];
+    $orderId = $_GET['orderId'];
+    $amount = $_GET['amount'];
+    $orderInfo = $_GET['orderInfo'];
+    $orderType = $_GET['orderType'];
+    $transId = $_GET['transId'];
+    $payType = $_GET['payType'];
+    $resultCode = isset($_GET['resultCode']) ? $_GET['resultCode'] : '';
+    $message = isset($_GET['message']) ? $_GET['message'] : '';
+    $payTime = date('Y-m-d H:i:s'); // Thời gian hiện tại
+
+    // Kiểm tra xem thanh toán có thành công hay không (resultCode = 0 là thành công)
+    $status = ($resultCode == '0') ? 'Thành công' : 'Thất bại';
+
+    // Thêm dữ liệu vào bảng momo
+    $insert_momo = "
+            INSERT INTO momo (partner_code, order_id, amount, order_info, order_type, trans_id, pay_type, result_code, message, pay_time, status)
+            VALUES ('$partnerCode', '$orderId', '$amount', '$orderInfo', '$orderType', '$transId', '$payType', '$resultCode', '$message', '$payTime', '$status')
+        ";
+
+    // Thực hiện truy vấn
+    if (mysqli_query($conn, $insert_momo)) {
+            // Lấy MaMomo vừa được tạo
+            $maMomo = mysqli_insert_id($conn);
+
+            if ($resultCode == '0') {
+                // Cập nhật hoadon: Thêm MaMomo và trạng thái
+                $update_order = "
+                    UPDATE hoadon
+                    SET TinhTrang = 'Đã thanh toán',
+                        PhuongThucTT = 'MoMo',
+                        MaMomo = $maMomo
+                    WHERE MaHD = '$orderId'
+                ";
+                mysqli_query($conn, $update_order);
+            }
+        } else {
+            error_log("Lỗi lưu thông tin MoMo: " . mysqli_error($conn));
+        }
+}
+?>
+
+<!-- Phần HTML hiển thị thông báo thành công -->
+<div class="row">
+    <div class="col-sm-10 offset-sm-1">
+        <div class="order-complete">
             <p class="icon-addcart"><span><i class="fas fa-check"></i></span></p>
-            <h2 class="mb-4">Cảm ơn bạn đã mua hàng!</h2>
-            <p class="mb-4">Đơn hàng của bạn đã được xác nhận và sẽ được xử lý trong thời gian sớm nhất.</p>
+            <?php if (isset($_GET['resultCode']) && $_GET['resultCode'] == '0'): ?>
+                <h2 class="mb-4">Cảm ơn bạn đã mua hàng!</h2>
+                <p class="mb-4">Thanh toán MoMo thành công. Đơn hàng của bạn đã được xác nhận và sẽ được xử lý trong thời gian sớm nhất.</p>
+                <?php if (isset($_GET['transId'])): ?>
+                    <p>Mã giao dịch MoMo: <strong><?php echo $_GET['transId']; ?></strong></p>
+                <?php endif; ?>
+            <?php elseif (isset($_GET['resultCode'])): ?>
+                <h2 class="mb-4">Thanh toán không thành công!</h2>
+                <p class="mb-4">Có lỗi xảy ra trong quá trình thanh toán: <?php echo isset($_GET['message']) ? $_GET['message'] : 'Lỗi không xác định'; ?></p>
+                <p>Vui lòng thử lại hoặc chọn phương thức thanh toán khác.</p>
+            <?php else: ?>
+                <h2 class="mb-4">Cảm ơn bạn đã mua hàng!</h2>
+                <p class="mb-4">Đơn hàng của bạn đã được xác nhận và sẽ được xử lý trong thời gian sớm nhất.</p>
+            <?php endif; ?>
             <p>
-              <a href="?view" class="btn btn-primary">Tiếp tục mua sắm</a>
+                <a href="?view" class="btn btn-primary">Tiếp tục mua sắm</a>
             </p>
-          </div>
         </div>
-      </div>
     </div>
-  </div>
+</div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.2.3/js/bootstrap.bundle.min.js"></script>
 </body>
