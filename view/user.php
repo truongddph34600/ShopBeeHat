@@ -292,7 +292,7 @@ if (isset($_GET['alert']) && $_GET['alert'] !== '') {
         <ul class="nav nav-pills mb-4" id="pills-tab" role="tablist">
             <li class="nav-item">
                 <a
-                  class="nav-link"
+                  class="nav-link active"
                   id="pills-info-tab"
                   data-toggle="pill"
                   href="#pills-info"
@@ -302,13 +302,18 @@ if (isset($_GET['alert']) && $_GET['alert'] !== '') {
             </li>
             <li class="nav-item">
                 <a
-                  class="nav-link active"
+                  class="nav-link"
                   id="pills-orders-tab"
                   data-toggle="pill"
                   href="#pills-orders"
                   role="tab"
                   aria-controls="pills-orders"
                 ><i class="fas fa-shopping-bag mr-2"></i>Đơn Hàng</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="pills-momo-tab" data-toggle="pill" href="#pills-momo" role="tab" aria-controls="pills-momo">
+                    <i class="fab fa-cc-mastercard mr-2"></i>Đơn Hàng Momo
+                </a>
             </li>
             <li class="nav-item">
                 <a
@@ -320,9 +325,10 @@ if (isset($_GET['alert']) && $_GET['alert'] !== '') {
         </ul>
 
         <div class="tab-content" id="pills-tabContent">
+
             <!-- Tab Thông Tin -->
             <div
-              class="tab-pane fade"
+              class="tab-pane fade show active"
               id="pills-info"
               role="tabpanel"
               aria-labelledby="pills-info-tab"
@@ -389,7 +395,7 @@ if (isset($_GET['alert']) && $_GET['alert'] !== '') {
 
             <!-- Tab Đơn Hàng -->
             <div
-              class="tab-pane fade show active"
+              class="tab-pane fade"
               id="pills-orders"
               role="tabpanel"
               aria-labelledby="pills-orders-tab"
@@ -508,6 +514,155 @@ if (isset($_GET['alert']) && $_GET['alert'] !== '') {
                     <?php
                         $first = false;
                     endwhile; ?>
+                </div>
+                <?php } ?>
+            </div>
+
+            <!-- Tab Đơn Hàng Momo -->
+            <div class="tab-pane fade" id="pills-momo" role="tabpanel" aria-labelledby="pills-momo-tab">
+                <?php
+                // Lấy đơn hàng Momo của khách hàng
+                $sql_momo = "SELECT * FROM hoadonmomo WHERE MaKH='" . $kh['MaKH'] . "' ORDER BY NgayDat DESC";
+                $bills_momo = mysqli_query($conn, $sql_momo);
+
+                if (!$bills_momo || mysqli_num_rows($bills_momo) == 0) {
+                    echo '
+                    <div class="empty-order">
+                        <i class="fab fa-cc-mastercard"></i>
+                        <h4>Bạn chưa có đơn hàng Momo nào</h4>
+                        <p>Hãy tiếp tục mua sắm và thanh toán bằng Momo!</p>
+                        <a href="?view" class="btn btn-info mt-3">
+                            <i class="fas fa-shopping-bag mr-2"></i>Tiếp tục mua sắm
+                        </a>
+                    </div>';
+                } else {
+                ?>
+                <div class="accordion" id="momoAccordion">
+                    <?php
+                    $first = true;
+                    while ($order_momo = mysqli_fetch_array($bills_momo)):
+                        $orderId = 'MOMO' . $order_momo['MaHD'];
+                        $headId = 'headingMomo' . $order_momo['MaHD'];
+                        $collapseId = 'collapseMomo' . $order_momo['MaHD'];
+
+                        // Xác định trạng thái đơn Momo
+                        if ($order_momo['TrangThai'] == 'Hoàn thành') {
+                            $statusClass = 'success';
+                            $statusIcon = 'check-circle';
+                        } elseif ($order_momo['TrangThai'] == 'Đã duyệt') {
+                            $statusClass = 'info';
+                            $statusIcon = 'truck';
+                        } else {
+                            $statusClass = 'warning';
+                            $statusIcon = 'clock';
+                        }
+                    ?>
+                    <div class="card mb-3">
+                        <div class="card-header" id="<?php echo $headId; ?>">
+                            <h5 class="mb-0 d-flex justify-content-between align-items-center">
+                                <button class="btn btn-link" type="button" data-toggle="collapse"
+                                        data-target="#<?php echo $collapseId; ?>"
+                                        aria-expanded="<?php echo $first ? 'true' : 'false'; ?>"
+                                        aria-controls="<?php echo $collapseId; ?>">
+                                    <i class="fab fa-cc-mastercard mr-2"></i>
+                                    Đơn Momo #<?php echo $order_momo['MaHD']; ?> –
+                                    <?php echo date('d/m/Y', strtotime($order_momo['NgayDat'])); ?>
+                                </button>
+                                <div>
+                                    <span class="badge badge-<?php echo $statusClass; ?>">
+                                        <i class="fas fa-<?php echo $statusIcon; ?> mr-1"></i>
+                                        <?php echo htmlspecialchars($order_momo['TrangThai']); ?>
+                                    </span>
+                                </div>
+                            </h5>
+                        </div>
+                        <div id="<?php echo $collapseId; ?>"
+                             class="collapse <?php echo $first ? 'show' : ''; ?>"
+                             aria-labelledby="<?php echo $headId; ?>"
+                             data-parent="#momoAccordion">
+                            <div class="card-body">
+                                <div class="order-summary mb-3 pb-3 border-bottom">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p class="mb-1">
+                                                <strong><i class="fas fa-calendar-alt mr-2"></i>Ngày đặt:</strong>
+                                                <?php echo date('d/m/Y H:i', strtotime($order_momo['NgayDat'])); ?>
+                                            </p>
+                                            <p class="mb-1">
+                                                <strong><i class="fas fa-calendar-check mr-2"></i>Ngày giao:</strong>
+                                                <?php echo $order_momo['NgayGiao'] ? date('d/m/Y', strtotime($order_momo['NgayGiao'])) : 'Chưa giao'; ?>
+                                            </p>
+                                            <p class="mb-1">
+                                                <strong><i class="fas fa-money-check-alt mr-2"></i>Thanh toán:</strong>
+                                                <span class="badge badge-success">
+                                                    <i class="fas fa-check mr-1"></i>
+                                                    <?php echo $order_momo['TinhTrang']; ?>
+                                                </span>
+                                            </p>
+                                        </div>
+                                        <div class="col-md-6 text-md-right">
+                                            <p class="mb-1">
+                                                <strong><i class="fas fa-money-bill-wave mr-2"></i>Tổng tiền:</strong>
+                                                <span class="text-danger font-weight-bold">
+                                                    <?php echo number_format($order_momo['TongTien']); ?> VNĐ
+                                                </span>
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <h5 class="mb-3">
+                                    <i class="fas fa-list mr-2"></i>Chi tiết đơn hàng
+                                </h5>
+                                <div class="table-responsive">
+                                    <table class="table table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Sản phẩm</th>
+                                                <th>Size</th>
+                                                <th>Màu</th>
+                                                <th>Số lượng</th>
+                                                <th>Đơn giá</th>
+                                                <th>Thành tiền</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?php
+                                            $details_momo = mysqli_query($conn, "SELECT * FROM chitiethoadonmomo WHERE MaHD='" . $order_momo['MaHD'] . "'");
+                                            $i = 0;
+                                            while ($item = mysqli_fetch_array($details_momo)):
+                                                $i++;
+                                                $product_result = product($item['MaSP']);
+                                                if ($product_result !== false && mysqli_num_rows($product_result) > 0) {
+                                                    $prod = mysqli_fetch_array($product_result);
+                                                    $product_name = htmlspecialchars($prod['TenSP']);
+                                                } else {
+                                                    $product_name = "Sản phẩm không tồn tại";
+                                                }
+                                            ?>
+                                            <tr>
+                                                <td><?php echo $i; ?></td>
+                                                <td><?php echo $product_name; ?></td>
+                                                <td><?php echo htmlspecialchars($item['Size']); ?></td>
+                                                <td><?php echo htmlspecialchars($item['MaMau']); ?></td>
+                                                <td><?php echo $item['SoLuong']; ?></td>
+                                                <td><?php echo number_format($item['DonGia']); ?> VNĐ</td>
+                                                <td class="font-weight-bold">
+                                                    <?php echo number_format($item['ThanhTien']); ?> VNĐ
+                                                </td>
+                                            </tr>
+                                            <?php endwhile; ?>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php
+                        $first = false;
+                    endwhile;
+                    ?>
                 </div>
                 <?php } ?>
             </div>
