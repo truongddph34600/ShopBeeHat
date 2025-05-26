@@ -30,8 +30,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php 
-					
+                        <?php
 				 	while ($row=mysqli_fetch_array($rs)) { ?>
                         <tr>
                             <td><?php echo $row['MaHD']; ?></td>

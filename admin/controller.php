@@ -43,6 +43,13 @@
                         }else{
                              include('shipper/main.php');
                         }
+                    break;
+                    case 'giaohangmomo':
+                                            if($check['Quyen']>2 && $check['Quyen']<5){
+                                                echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
+                                            }else{
+                                                 include('shippermomo/main.php');
+                                            }
 
                         break;
                     case 'danhthu':
@@ -96,6 +103,13 @@
                     case 'thongtincanhan':
                          include('nhanvien/thongtin.php');
                          break;
+                    case 'momo':
+                         if($check['Quyen']==3 || $check['Quyen']==5 ){
+                                                     echo('<center> BẠN KHÔNG CÓ QUYỀN TRUY CẬP!</center>');
+                                                 }else{
+                                                      include("momo/main.php");
+                                                 }
+                                             break;
                     default:
                         break;
                 }
