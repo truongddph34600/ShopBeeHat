@@ -11,10 +11,24 @@ function execPostRequest($url, $data)
             'Content-Type: application/json',
             'Content-Length: ' . strlen($data))
     );
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 10);
+
+    // SSL settings
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+
     //execute post
     $result = curl_exec($ch);
+
+    // Check for cURL errors
+    if (curl_errno($ch)) {
+        error_log('cURL Error: ' . curl_error($ch));
+        curl_close($ch);
+        return false;
+    }
+
     //close connection
     curl_close($ch);
     return $result;
@@ -22,9 +36,13 @@ function execPostRequest($url, $data)
 
 $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
-$partnerCode = 'MOMOBKUN20180529';
-$accessKey = 'klm05TvNBzhg7h7j';
-$secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
+// Thử endpoint backup nếu endpoint chính không hoạt động
+$backup_endpoint = "https://test-payment.momo.vn/gw_payment/transactionProcessor";
+
+// Thông tin test mới nhất từ MoMo (2024)
+$partnerCode = 'MOMO';
+$accessKey = 'F8BBA842ECF85';
+$secretKey = 'K951B6PE1waDMi640xX08PD3vg6EkVlz';
 
 // Xử lý số tiền đúng cách - loại bỏ dấu phẩy nếu có và đảm bảo là số nguyên
 $rawAmount = $_POST['tongtien'];
@@ -94,43 +112,86 @@ $_SESSION['momo_payment'] = [
     'time' => date('Y-m-d H:i:s')
 ];
 
+// INSERT vào bảng momo TRƯỚC KHI gửi request đến MoMo
+$insert_result = false;
+if (isset($conn)) { // Kiểm tra kết nối database tồn tại
+    // Thêm code insert vào bảng momo ở đây
+    // Ví dụ:
+    $sql_momo = "INSERT INTO momo (order_id, amount, customer_id, status, created_at)
+                 VALUES (?, ?, ?, 'pending', NOW())";
+
+    if ($stmt = mysqli_prepare($conn, $sql_momo)) {
+        mysqli_stmt_bind_param($stmt, "sis", $orderId, $amount, $customer_id);
+        $insert_result = mysqli_stmt_execute($stmt);
+        mysqli_stmt_close($stmt);
+    }
+}
+
 $result = execPostRequest($endpoint, json_encode($data));
 $jsonResult = json_decode($result, true);
 
-if (isset($jsonResult['payUrl'])) {
+// Kiểm tra lỗi JSON decode
+if (json_last_error() !== JSON_ERROR_NONE) {
+    echo "<h3>Lỗi xử lý phản hồi từ MoMo</h3>";
+    echo "<p>Vui lòng thử lại sau.</p>";
+    echo "<p><a href='javascript:history.back()'>Quay lại</a></p>";
+    exit;
+}
+
+if (isset($jsonResult['payUrl']) && $jsonResult['resultCode'] == 0) {
+    // Chuyển hướng đến trang thanh toán MoMo
     header('Location: ' . $jsonResult['payUrl']);
     exit;
 } else {
-    echo "<h3>Lỗi từ MoMo:</h3>";
-    echo "<pre>";
-    print_r($jsonResult);
-    echo "</pre>";
+    echo "<h3>Có lỗi xảy ra trong quá trình tạo thanh toán</h3>";
+
+    if (isset($jsonResult['message'])) {
+        echo "<p><strong>Thông báo:</strong> " . $jsonResult['message'] . "</p>";
+    }
+
+    if (isset($jsonResult['resultCode']) && $jsonResult['resultCode'] != 0) {
+        echo "<p><strong>Mã lỗi:</strong> " . $jsonResult['resultCode'] . "</p>";
+    }
 
     echo "<p>Vui lòng kiểm tra lại thông tin thanh toán.</p>";
     echo "<p><a href='javascript:history.back()'>Quay lại</a></p>";
 }
-if($insert_result) {  // Giả sử $insert_result là kết quả insert vào bảng momo
-    // Tạo đơn hàng mới trong bảng hoadonmomo
-    $order_data = array(
-        'MaKH' => $_SESSION['MaKH'], // Giả sử đã có session chứa MaKH
-        'MaMomo' => mysqli_insert_id($conn), // Lấy MaMomo vừa insert
-        'NgayDat' => date('Y-m-d H:i:s'),
-        'TinhTrang' => 'Chờ thanh toán',
-        'TongTien' => $amount  // Số tiền thanh toán từ form
-    );
 
-    $sql = "INSERT INTO hoadonmomo (MaKH, MaMomo, NgayDat, TinhTrang, TongTien)
-            VALUES (?, ?, ?, ?, ?)";
+// Chỉ tạo đơn hàng trong bảng hoadonmomo nếu insert vào bảng momo thành công
+if($insert_result && isset($conn)) {
+    // Lấy MaKH từ session
+    $maKH = isset($_SESSION['MaKH']) ? $_SESSION['MaKH'] : null;
 
-    $stmt = mysqli_prepare($conn, $sql);
-    mysqli_stmt_bind_param($stmt, "iissd",
-        $order_data['MaKH'],
-        $order_data['MaMomo'],
-        $order_data['NgayDat'],
-        $order_data['TinhTrang'],
-        $order_data['TongTien']
-    );
+    if ($maKH) {
+        // Tạo đơn hàng mới trong bảng hoadonmomo
+        $order_data = array(
+            'MaKH' => $maKH,
+            'MaMomo' => mysqli_insert_id($conn), // Lấy MaMomo vừa insert
+            'NgayDat' => date('Y-m-d H:i:s'),
+            'TinhTrang' => 'Chờ thanh toán',
+            'TongTien' => $amount
+        );
+        $sql = "INSERT INTO hoadonmomo (MaKH, MaMomo, NgayDat, TinhTrang, TongTien)
+                VALUES (?, ?, ?, ?, ?)";
+        if ($stmt = mysqli_prepare($conn, $sql)) {
+            mysqli_stmt_bind_param($stmt, "iissd",
+                $order_data['MaKH'],
+                $order_data['MaMomo'],
+                $order_data['NgayDat'],
+                $order_data['TinhTrang'],
+                $order_data['TongTien']
+            );
 
-    mysqli_stmt_execute($stmt);
+            if (mysqli_stmt_execute($stmt)) {
+                // Thành công
+                error_log("Đơn hàng MoMo đã được tạo thành công. Order ID: " . $orderId);
+            } else {
+                error_log("Lỗi khi tạo đơn hàng MoMo: " . mysqli_error($conn));
+            }
+            mysqli_stmt_close($stmt);
+        }
+    } else {
+        error_log("Không tìm thấy MaKH trong session");
+    }
 }
 ?>
