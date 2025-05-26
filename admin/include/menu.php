@@ -250,41 +250,72 @@
 
             <hr class="sidebar-divider">
 
-            <!-- Orders Pending -->
-            <?php
-        $sql="SELECT * FROM hoadon WHERE TinhTrang = 'chưa duyệt'";
-        $rs=mysqli_query($conn,$sql);
-        $dem=mysqli_num_rows($rs);
-      ?>
-            <li class="nav-item">
-                <a class="nav-link" href="?action=xldathang">
-                    <i class="mdi mdi-cart menu-icon"></i>
-                    <span>Đơn Đặt Hàng <sup style="border-radius: 10px;" class="badge-danger ">
-                            &#160;<?php echo $dem ?>
-                            &#160;</sup></span></a>
-            </li>
+<!-- Orders Pending -->
+<?php
+$sql = "SELECT * FROM hoadon WHERE TinhTrang = 'chưa duyệt'";
+$rs = mysqli_query($conn, $sql);
+$dem = mysqli_num_rows($rs);
+?>
+<li class="nav-item">
+    <a class="nav-link" href="?action=xldathang">
+        <i class="mdi mdi-cart menu-icon"></i>
+        <span>Đơn COD <sup style="border-radius: 10px;" class="badge-danger">
+                &#160;<?php echo $dem ?>
+                &#160;</sup></span></a>
+</li>
 <hr class="sidebar-divider d-none d-md-block">
-            <!-- Momo -->
-            <li class="nav-item">
-                <a class="nav-link" href="?action=momo">
-                    <i class="mdi mdi-wallet menu-icon"></i>
-                    <span>Momo</span>
-                </a>
-            </li>
+
+<!-- Shipping -->
+<?php
+$sql = "SELECT * FROM hoadon
+        WHERE NgayGiao is not null
+        AND TinhTrang='Đã duyệt'
+        ORDER BY NgayGiao ASC";
+$rs = mysqli_query($conn, $sql);
+$dem = mysqli_num_rows($rs);
+?>
+<li class="nav-item">
+    <a class="nav-link" href="?action=giaohang">
+        <i class="mdi mdi-truck-delivery menu-icon"></i>
+        <span>Giao Hàng COD <sup style="border-radius: 10px;" class="badge-danger">
+                &#160;<?php echo $dem ?>
+                &#160;</sup></span></a>
+</li>
 <hr class="sidebar-divider d-none d-md-block">
-            <!-- Shipping -->
-            <?php
-        $sql="SELECT * FROM hoadon WHERE NgayGiao is not null and TinhTrang='Đã duyệt' ORDER BY NgayGiao ASc";
-        $rs=mysqli_query($conn,$sql);
-        $dem=mysqli_num_rows($rs);
-      ?>
-            <li class="nav-item">
-                <a class="nav-link" href="?action=giaohang">
-                    <i class="mdi mdi-truck-delivery menu-icon"></i>
-                    <span>Giao Hàng <sup style="border-radius: 10px;" class="badge-danger ">
-                            &#160;<?php echo $dem ?>
-                            &#160;</sup></span></a>
-            </li>
+
+<!-- Momo Orders -->
+<?php
+$sql_momo = "SELECT * FROM hoadonmomo WHERE TinhTrang = 'Đã thanh toán' AND TrangThai = 'Chưa duyệt'";
+$rs_momo = mysqli_query($conn, $sql_momo);
+$dem_momo = mysqli_num_rows($rs_momo);
+?>
+<li class="nav-item">
+    <a class="nav-link" href="?action=momo">
+        <i class="mdi mdi-wallet menu-icon"></i>
+        <span>Đơn Momo <sup style="border-radius: 10px;" class="badge-danger">
+                &#160;<?php echo $dem_momo ?>
+                &#160;</sup></span></a>
+</li>
+<hr class="sidebar-divider d-none d-md-block">
+
+<!-- Shipping Momo -->
+<?php
+$sql_shipmomo = "SELECT * FROM hoadonmomo
+                 WHERE NgayGiao is not null
+                 AND TinhTrang = 'Đã thanh toán'
+                 AND TrangThai = 'Đã duyệt'
+                 ORDER BY NgayGiao ASC";
+$rs_shipmomo = mysqli_query($conn, $sql_shipmomo);
+$dem_shipmomo = mysqli_num_rows($rs_shipmomo);
+?>
+<li class="nav-item">
+    <a class="nav-link" href="?action=giaohangmomo">
+        <i class="mdi mdi-account-tie menu-icon"></i>
+        <span>Giao hàng Momo <sup style="border-radius: 10px;" class="badge-danger">
+                &#160;<?php echo $dem_shipmomo ?>
+                &#160;</sup></span></a>
+</li>
+
 <hr class="sidebar-divider d-none d-md-block">
             <!-- Kho Hàng -->
             <li class="nav-item">

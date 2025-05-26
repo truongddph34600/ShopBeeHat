@@ -142,32 +142,41 @@ function product($id){
   mysqli_close($conn);
 }
 // tính sản phẩm khuyến mãi
-function price_sale($id,$gia){
-  global $conn;
-  $a=0; $b=0;$tong=0;
-  date_default_timezone_set('Asia/Ho_Chi_Minh');$date=getdate();
-	$ngay=$date['year']."-".$date['mon']."-".($date['mday']);
+function price_sale($id, $gia) {
+    global $conn;
+    $a = 0; $b = 0; $tong = 0;
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
+    $date = getdate();
+    $ngay = $date['year'] . "-" . $date['mon'] . "-" . ($date['mday']);
 
-  $km="SELECT * FROM `sanphamkhuyenmai` WHERE `MaSP`=".$id;
-  $query_km=mysqli_query($conn,$km);
-  while ($kq_km=mysqli_fetch_array($query_km)) {
-    $km1="SELECT * FROM `khuyenmai` WHERE `MaKM`=".$kq_km['MaKM']." and NgayBD <='".$ngay."' and NgayKT >='".$ngay."'";
-      $query_km1=mysqli_query($conn,$km1);
-      while ($kq_km=mysqli_fetch_array($query_km1)) {
-           if(isset($kq_km['KM_PT'])){ $b=$b+($kq_km['KM_PT']);}
-           if(isset($kq_km['TienKM'])){ $a=$a+($kq_km['TienKM']);}
-      }
-  }
-  if ($a!==0 && $b!==0) {
-    return  $tong = $gia - $a - ($gia*$b/100);
-  }elseif($b==0){
-    return $tong=$gia-$a;
-  }elseif($a==0){
-    return $tong=$gia-($gia*$b/100);
-  }else{
-    return $gia;
-  }
-  mysqli_close($conn);
+    $km = "SELECT * FROM `sanphamkhuyenmai` WHERE `MaSP`=" . $id;
+    $query_km = mysqli_query($conn, $km);
+    while ($kq_km = mysqli_fetch_array($query_km)) {
+        $km1 = "SELECT * FROM `khuyenmai` WHERE `MaKM`=" . $kq_km['MaKM'] . " and NgayBD <='" . $ngay . "' and NgayKT >='" . $ngay . "'";
+        $query_km1 = mysqli_query($conn, $km1);
+        while ($kq_km = mysqli_fetch_array($query_km1)) {
+            if (isset($kq_km['KM_PT'])) {
+                $b = $b + ($kq_km['KM_PT']);
+            }
+            if (isset($kq_km['TienKM'])) {
+                $a = $a + ($kq_km['TienKM']);
+            }
+        }
+    }
+
+    // Tính toán giá sau giảm
+    if ($a !== 0 && $b !== 0) {
+        $tong = $gia - $a - ($gia * $b / 100);
+    } elseif ($b == 0) {
+        $tong = $gia - $a;
+    } elseif ($a == 0) {
+        $tong = $gia - ($gia * $b / 100);
+    } else {
+        $tong = $gia;
+    }
+
+    // Đảm bảo giá không nhỏ hơn 0
+    return max(0, $tong);
 }
 // lấy  product detail
 function product_detail_color($id){
@@ -258,12 +267,13 @@ function check_coupon($id){
   $resulf = mysqli_query($conn ,$sql);
   $count=mysqli_num_rows($resulf);
   if($count==0){
-    return $coupon=0;
+    return 0;
   }else{
     $coupon=mysqli_fetch_array($resulf);
-    return number_format( $coupon['TienGG']);
+    // Trả về giá trị số thay vì chuỗi đã format
+    return $coupon['TienGG'];
   }
-mysqli_close($conn);
+  mysqli_close($conn);
 }
 // các bình luận product
 function product_review($id){
@@ -708,6 +718,150 @@ function getMomoOrder($mahd) {
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
     return mysqli_fetch_assoc($result);
+}
+// Hàm áp dụng voucher với kiểm tra giá tối thiểu
+function apply_coupon_to_total($total, $coupon_discount) {
+    // Đảm bảo tổng tiền sau giảm không nhỏ hơn 0
+    $final_total = $total - $coupon_discount;
+    return max(0, $final_total);
+}
+// Hàm tính tổng giá trị giỏ hàng sau tất cả các giảm giá
+function calculate_cart_total_with_discounts($cart_items, $coupon_code = '') {
+    $total = 0;
+
+    // Tính tổng giá trị giỏ hàng với khuyến mãi sản phẩm
+    foreach ($cart_items as $item) {
+        $original_price = floatval(str_replace(',', '', $item['DonGia']));
+        $discounted_price = price_sale($item['MaSP'], $original_price);
+        $total += $discounted_price * $item['SoLuong'];
+    }
+
+    // Áp dụng voucher nếu có
+    if (!empty($coupon_code)) {
+        $coupon_discount = check_coupon($coupon_code);
+        if ($coupon_discount > 0) {
+            $total = apply_coupon_to_total($total, $coupon_discount);
+        }
+    }
+
+    return max(0, $total);
+}
+function validate_discount($original_price, $discount_amount, $discount_percent = 0) {
+    $final_price = $original_price;
+
+    // Áp dụng giảm giá theo số tiền
+    if ($discount_amount > 0) {
+        $final_price -= $discount_amount;
+    }
+
+    // Áp dụng giảm giá theo phần trăm
+    if ($discount_percent > 0) {
+        $final_price -= ($original_price * $discount_percent / 100);
+    }
+
+    // Đảm bảo giá không âm
+    return max(0, $final_price);
+}
+// Hàm kiểm tra tính hợp lệ của phiếu giảm giá
+function validate_coupon($coupon_code, $cart_total) {
+    global $conn;
+
+    if (empty($coupon_code)) {
+        return ['valid' => false, 'message' => 'Mã giảm giá không được để trống'];
+    }
+
+    $coupon_code = mysqli_real_escape_string($conn, $coupon_code);
+    $sql = "SELECT * FROM `phieugiamgia` WHERE `TenGG` = '$coupon_code'";
+    $result = mysqli_query($conn, $sql);
+
+    if (mysqli_num_rows($result) == 0) {
+        return ['valid' => false, 'message' => 'Mã giảm giá không tồn tại'];
+    }
+
+    $coupon = mysqli_fetch_array($result);
+    $discount_amount = floatval($coupon['TienGG']);
+
+    if ($discount_amount >= $cart_total) {
+        return [
+            'valid' => true,
+            'discount' => $cart_total,
+            'message' => 'Áp dụng thành công! Đơn hàng được miễn phí.',
+            'warning' => 'Giá trị giảm giá lớn hơn tổng đơn hàng'
+        ];
+    }
+
+    return [
+        'valid' => true,
+        'discount' => $discount_amount,
+        'message' => 'Áp dụng mã giảm giá thành công!'
+    ];
+}
+// Hàm format tiền tệ an toàn
+function safe_number_format($number, $decimals = 0) {
+    if ($number < 0) {
+        return '0';
+    }
+    return number_format($number, $decimals);
+}
+// Hàm hiển thị thông tin giảm giá chi tiết
+function get_discount_info($product_id, $original_price) {
+    global $conn;
+    $discount_info = [
+        'original_price' => $original_price,
+        'final_price' => $original_price,
+        'discount_amount' => 0,
+        'discount_percent' => 0,
+        'promotion_details' => []
+    ];
+
+    date_default_timezone_set('Asia/Ho_Chi_Minh');
+    $date = getdate();
+    $ngay = $date['year'] . "-" . $date['mon'] . "-" . ($date['mday']);
+
+    $total_discount_amount = 0;
+    $total_discount_percent = 0;
+
+    // Lấy thông tin khuyến mãi
+    $km = "SELECT * FROM `sanphamkhuyenmai` WHERE `MaSP`=" . intval($product_id);
+    $query_km = mysqli_query($conn, $km);
+
+    while ($kq_km = mysqli_fetch_array($query_km)) {
+        $km1 = "SELECT * FROM `khuyenmai` WHERE `MaKM`=" . $kq_km['MaKM'] .
+               " and NgayBD <='" . $ngay . "' and NgayKT >='" . $ngay . "'";
+        $query_km1 = mysqli_query($conn, $km1);
+
+        while ($promotion = mysqli_fetch_array($query_km1)) {
+            $promo_detail = [
+                'name' => $promotion['TenKM'] ?? 'Khuyến mãi',
+                'type' => '',
+                'value' => 0
+            ];
+
+            if (isset($promotion['KM_PT']) && $promotion['KM_PT'] > 0) {
+                $total_discount_percent += $promotion['KM_PT'];
+                $promo_detail['type'] = 'percent';
+                $promo_detail['value'] = $promotion['KM_PT'];
+            }
+
+            if (isset($promotion['TienKM']) && $promotion['TienKM'] > 0) {
+                $total_discount_amount += $promotion['TienKM'];
+                $promo_detail['type'] = 'amount';
+                $promo_detail['value'] = $promotion['TienKM'];
+            }
+
+            $discount_info['promotion_details'][] = $promo_detail;
+        }
+    }
+
+    // Tính giá cuối cùng
+    $final_price = validate_discount($original_price, $total_discount_amount, $total_discount_percent);
+
+    $discount_info['final_price'] = $final_price;
+    $discount_info['discount_amount'] = $total_discount_amount;
+    $discount_info['discount_percent'] = $total_discount_percent;
+    $discount_info['total_saved'] = $original_price - $final_price;
+
+    return $discount_info;
 }
 
 ?>

@@ -11,9 +11,9 @@
     <title>Admin</title>
 
     <link rel="shortcut icon" href="assets/images/favicon.png" />
-    <script src="/onishoes/webroot/jquery/jquery.js"></script>
+    <script src="/shopbeehat/webroot/jquery/jquery.js"></script>
     <link rel="stylesheet" href="template/css/sb-admin-2.min.css">
-    <link href="/onishoes/webroot/font/Font Awesome/css/all.min.css" rel="stylesheet" type="text/css">
+    <link href="/shopbeehat/webroot/font/Font Awesome/css/all.min.css" rel="stylesheet" type="text/css">
 
 
 </head>

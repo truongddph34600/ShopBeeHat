@@ -1,17 +1,17 @@
 <?php
 include_once('../model/database.php');
 
-	// lấy danh sách sản phẩm  theo phân trang.
-            if(isset($_GET['trang'])){
-                $trang=$_GET['trang'];
-            }
-            else{ 
-                $trang=1;
-            }
-            $from =($trang-1)*20;
-            $sql="SELECT * FROM `sanpham`   LIMIT $from,20 ";
-            $rs=mysqli_query($conn,$sql);
-            
+    // lấy danh sách sản phẩm theo phân trang.
+    if(isset($_GET['trang'])){
+        $trang = $_GET['trang'];
+    }
+    else{
+        $trang = 1;
+    }
+    $from = ($trang-1) * 20;
+    $sql = "SELECT * FROM `sanpham` LIMIT $from,20";
+    $rs = mysqli_query($conn, $sql);
+
     // Lấy tổng số sản phẩm để tính phân trang
     $ds_spn1b = "SELECT MaSP FROM `sanpham`";
     $query_dssp2 = mysqli_query($conn, $ds_spn1b);
