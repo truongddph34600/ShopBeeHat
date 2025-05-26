@@ -15,7 +15,8 @@
 	$order=mysqli_num_rows($rs132);
 	if (isset($_POST['dk'])) {
 		$dk=$_POST['dk'];
-	}else  {  $dk='Chưa Giao';  } 
+	}else  {  $dk='Chưa Giao';  }
+
 ?>
 <div class="container-fluid">
     <div class=" alert alert-primary">
