@@ -1,31 +1,37 @@
 <?php
 include_once('../../model/database.php');
+	if(isset($_GET['them'])){
+		$tengg=$_GET['tengg'];
+		if ($_GET['tiengg']) { $tiengg=$_GET['tiengg']; } else { $tiengg=0; }
+		$sql="INSERT INTO `phieugiamgia`( `TenGG`, `TienGG`)
+							 VALUES ('$tengg',$tiengg)";
+		$rs=mysqli_query($conn,$sql);
+		if(isset($rs)){
+			header('location:../index.php?action=phieugiamgia&thongbao=them');
+		}
+	}
+	if (isset($_GET['xoa'])) {
+        $magg = $_GET['MaGG'];
+        $sql = "DELETE FROM `phieugiamgia` WHERE MaGG = '$magg'";
+        $rs = mysqli_query($conn, $sql);
 
-if (isset($_GET['them'])) {
-    $ten   = mysqli_real_escape_string($conn, $_GET['tenphieu']);
-    $st    = floatval($_GET['sotien']);
-    $sql   = "INSERT INTO phieugiamgia (TenPhieu, SoTien) VALUES ('$ten', $st)";
-    mysqli_query($conn, $sql);
-    header('Location: ../index.php?action=phieugiamgia&thongbao=them');
-    exit;
-}
+        if ($rs) {
+            header('Location: ../index.php?action=phieugiamgia&thongbao=xoa');
+            exit(); // tốt nên dừng sau khi redirect
+        } else {
+            echo "Lỗi khi xóa dữ liệu: " . mysqli_error($conn);
+        }
+    }
 
-if (isset($_GET['xoa'])) {
-    $id    = intval($_GET['id']);
-    $sql   = "DELETE FROM phieugiamgia WHERE id=$id";
-    mysqli_query($conn, $sql);
-    header('Location: ../index.php?action=phieugiamgia&thongbao=xoa');
-    exit;
-}
+	if(isset($_GET['sua'])){
+    		$magg=$_GET['MaGG'];
+    		$tengg=$_GET['tengg'];
+    		if ($_GET['tiengg']) { $tiengg=$_GET['tiengg']; } else { $tiengg=0; }
+    		$sql="UPDATE `phieugiamgia` SET `TenGG`='$tengg',`TienGG`=$tiengg WHERE MaGG =$magg";
+    		$rs=mysqli_query($conn,$sql);
+    		if(isset($rs)){
+    			header('location:../index.php?action=phieugiamgia&thongbao=sua');
+    		}
+    	}
 
-if (isset($_GET['sua'])) {
-    $id    = intval($_GET['id']);
-    $ten   = mysqli_real_escape_string($conn, $_GET['tenphieu']);
-    $st    = floatval($_GET['sotien']);
-    $sql   = "UPDATE phieugiamgia
-              SET TenPhieu='$ten', SoTien=$st
-              WHERE id=$id";
-    mysqli_query($conn, $sql);
-    header('Location: ../index.php?action=phieugiamgia&thongbao=sua');
-    exit;
-}
+?>
