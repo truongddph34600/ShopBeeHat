@@ -1,55 +1,106 @@
 <?php
 session_start();
 include_once('../../model/database.php');
-date_default_timezone_set('Asia/Ho_Chi_Minh');
-if(isset($_GET['action'])){
-	$action=$_GET['action'];
-	switch ($action) {
-		case 'duyet':
-			$mahd=$_GET['mahd'];
-			$admin=$_SESSION['admin'];$manv=$admin['MaNV'];
-			$date=getdate();
-  			$ngay=$date['year']."-".$date['mon']."-".($date['mday']+1)." ".$date['hours'].":".$date['minutes'].":".$date['seconds'];
-  			$sql="update hoadonmomo set NgayGiao = '$ngay', MaNV=$manv, Trangthai='Đã duyệt' where MaHD=$mahd";
-  			$rs=mysqli_query($conn,$sql);
-  			if($rs){
-  				header('location:../index.php?action=xldathangmomo');
-  			}
-			break;
-		case 'huy':
-			$mahd=$_GET['mahd'];
-			$admin=$_SESSION['admin'];$manv=$admin['MaNV'];
-			$sql="update hoadonmomo set  MaNV=$manv, Trangthai='Hủy Bỏ' where MaHD=$mahd";
-			$rs=mysqli_query($conn,$sql);
-  			if($rs){
-  				$sql1="SELECT DISTINCT MaMau FROM `chitiethoadonmomo` WHERE MaHD='$mahd'";
-  				$rs1=mysqli_query($conn,$sql1);
-  				while ($r1=mysqli_fetch_array($rs1)) {
-  					$m=$r1['MaMau'];
-  					$sql3="select *from chitiethoadonmomo where MaHD='$mahd' and MaMau='$m'";
-  					$rs3=mysqli_query($conn,$sql3);
-  					while ($r2=mysqli_fetch_array($rs3)) {
-  						$size=$r2['Size'];
-  						$sql4="select *from chitiethoadonmomo where MaHD='$mahd' and MaMau='$m' and Size='$size'";
-  						$rs4=mysqli_query($conn,$sql4);
-  						while ($r3=mysqli_fetch_array($rs4)) {
-  							$sl=$r3['SoLuong'];
-		  					$masp=$r3['MaSP'];
-		  					$sql2="UPDATE `chitietsanpham` set `SoLuong`=(`SoLuong` + '$sl') where `MaSP`='$masp' and `MaSize`='$size' and `MaMau`='$m'";
-		  					$rs2=mysqli_query($conn,$sql2);
 
+if(isset($_GET['action'])) {
+    $action = $_GET['action'];
+    switch ($action) {
+        case 'duyet':
+            $mahd = $_GET['mahd'];
+            $admin = $_SESSION['admin'];
+            $manv = $admin['MaNV'];
 
-  						}
-  					}
-  				}
-  				header('location:../index.php?action=xldathangmomo');
-  			}
-			break;
-		default:
-			# code...
-			break;
-	}
+            // Tính ngày giao (ngày hiện tại + 1)
+            $ngaygiao = date('Y-m-d H:i:s', strtotime('+1 day'));
+
+            mysqli_begin_transaction($conn);
+            try {
+                // Kiểm tra trạng thái hiện tại
+                $check_sql = "SELECT TinhTrang, TrangThai FROM hoadonmomo WHERE MaHD = ?";
+                $check_stmt = mysqli_prepare($conn, $check_sql);
+                mysqli_stmt_bind_param($check_stmt, "i", $mahd);
+                mysqli_stmt_execute($check_stmt);
+                $result = mysqli_stmt_get_result($check_stmt);
+                $current_status = mysqli_fetch_assoc($result);
+
+                if($current_status['TinhTrang'] == 'Đã thanh toán' && $current_status['TrangThai'] == 'Chưa duyệt') {
+                    // Cập nhật trạng thái đơn hàng
+                    $sql = "UPDATE hoadonmomo
+                           SET NgayGiao = ?, MaNV = ?, TrangThai = 'Đã duyệt'
+                           WHERE MaHD = ?";
+                    $stmt = mysqli_prepare($conn, $sql);
+                    mysqli_stmt_bind_param($stmt, "sii", $ngaygiao, $manv, $mahd);
+
+                    if(mysqli_stmt_execute($stmt)) {
+                        mysqli_commit($conn);
+                        header('location: ../index.php?action=momo');
+                    } else {
+                        throw new Exception("Lỗi cập nhật trạng thái");
+                    }
+                } else {
+                    throw new Exception("Đơn hàng không hợp lệ để duyệt");
+                }
+            } catch(Exception $e) {
+                mysqli_rollback($conn);
+                echo "Lỗi: " . $e->getMessage();
+            }
+            break;
+
+        case 'huy':
+            $mahd = $_GET['mahd'];
+            $admin = $_SESSION['admin'];
+            $manv = $admin['MaNV'];
+
+            mysqli_begin_transaction($conn);
+            try {
+                // Kiểm tra trạng thái hiện tại
+                $check_sql = "SELECT TinhTrang, TrangThai FROM hoadonmomo WHERE MaHD = ?";
+                $check_stmt = mysqli_prepare($conn, $check_sql);
+                mysqli_stmt_bind_param($check_stmt, "i", $mahd);
+                mysqli_stmt_execute($check_stmt);
+                $result = mysqli_stmt_get_result($check_stmt);
+                $current_status = mysqli_fetch_assoc($result);
+
+                if($current_status['TrangThai'] == 'Chưa duyệt') {
+                    // Cập nhật trạng thái đơn hàng
+                    $sql = "UPDATE hoadonmomo
+                           SET MaNV = ?, TinhTrang = 'Đã hủy', TrangThai = 'Đã hủy'
+                           WHERE MaHD = ?";
+                    $stmt = mysqli_prepare($conn, $sql);
+                    mysqli_stmt_bind_param($stmt, "ii", $manv, $mahd);
+                    mysqli_stmt_execute($stmt);
+
+                    // Hoàn lại số lượng sản phẩm
+                    $sql_items = "SELECT * FROM chitiethoadonmomo WHERE MaHD = ?";
+                    $stmt_items = mysqli_prepare($conn, $sql_items);
+                    mysqli_stmt_bind_param($stmt_items, "i", $mahd);
+                    mysqli_stmt_execute($stmt_items);
+                    $result = mysqli_stmt_get_result($stmt_items);
+
+                    while($row = mysqli_fetch_assoc($result)) {
+                        $sql_update = "UPDATE chitietsanpham
+                                     SET SoLuong = SoLuong + ?
+                                     WHERE MaSP = ? AND MaSize = ? AND MaMau = ?";
+                        $stmt_update = mysqli_prepare($conn, $sql_update);
+                        mysqli_stmt_bind_param($stmt_update, "iiss",
+                            $row['SoLuong'], $row['MaSP'], $row['Size'], $row['MaMau']);
+                        mysqli_stmt_execute($stmt_update);
+                    }
+
+                    mysqli_commit($conn);
+                    header('location: ../index.php?action=momo');
+                } else {
+                    throw new Exception("Đơn hàng không thể hủy");
+                }
+            } catch(Exception $e) {
+                mysqli_rollback($conn);
+                echo "Lỗi: " . $e->getMessage();
+            }
+            break;
+
+        default:
+            header('location: ../index.php?action=momo');
+            break;
+    }
 }
-
-
 ?>
