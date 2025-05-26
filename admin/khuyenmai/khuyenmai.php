@@ -6,12 +6,15 @@
 <div class="container-fluid py-4">
     <div class="row">
         <div class="col-12">
+
             <div class="card shadow-sm">
                 <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                     <h5 class="mb-0">Quản Lý Khuyến Mãi</h5>
-
                 </div>
                 <div class="card-body">
+                    <a href="?action=khuyenmai&view=them" class="btn btn-add">
+                                    <i class="fas fa-user-plus mr-2"></i>Thêm Khuyến Mãi
+                                </a>
                     <div class="table-responsive">
                         <table class="table table-hover table-striped align-middle">
                             <thead class="table-dark">
@@ -137,7 +140,6 @@
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     })
-
     // Hàm xác nhận xóa
     function confirmDelete(maKM) {
         var modal = new bootstrap.Modal(document.getElementById('deleteModal'));
